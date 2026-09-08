@@ -105,7 +105,7 @@ class WhiteBoxThemGioHangTest extends TestCase
         $response = (new CartController())->store($request);
 
         $this->assertEquals(200, $response->status());
-        $this->assertDatabaseHas('cart_table_v2', [
+        $this->assertDatabaseHas('cart', [
             'user_id'    => $user->id,
             'product_id' => $product->id,
             'quantity'   => 3
@@ -131,7 +131,7 @@ class WhiteBoxThemGioHangTest extends TestCase
         $response = (new CartController())->store($request);
 
         $this->assertEquals(200, $response->status());
-        $this->assertDatabaseHas('cart_table_v2', [
+        $this->assertDatabaseHas('cart', [
             'user_id'    => $user->id,
             'product_id' => $product->id,
             'quantity'   => 2,
@@ -232,7 +232,7 @@ class WhiteBoxThemGioHangTest extends TestCase
         $response = (new CartController())->update($request, $cart->id);
 
         $this->assertEquals(200, $response->status());
-        $this->assertDatabaseHas('cart_table_v2', [
+        $this->assertDatabaseHas('cart', [
             'id'       => $cart->id,
             'quantity' => 5
         ]);
@@ -275,6 +275,6 @@ class WhiteBoxThemGioHangTest extends TestCase
         $response = (new CartController())->destroy($request, $cart->id);
 
         $this->assertEquals(200, $response->status());
-        $this->assertDatabaseMissing('cart_table_v2', ['id' => $cart->id]);
+        $this->assertDatabaseMissing('cart', ['id' => $cart->id]);
     }
 }

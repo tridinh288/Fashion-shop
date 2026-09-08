@@ -127,7 +127,7 @@ class WhiteBoxDatHangTest extends TestCase
             'product_id' => $product->id,
             'quantity'   => 2
         ]);
-        $this->assertDatabaseMissing('cart_table_v2', [
+        $this->assertDatabaseMissing('cart', [
             'user_id' => $user->id
         ]);
     }
