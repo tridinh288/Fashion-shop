@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -80,7 +81,12 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('hinh_anh')) {
+            $anh_cu = $product->hinh_anh;
             $product->hinh_anh = $request->file('hinh_anh')->store('products', 'public');
+
+            if ($anh_cu && $anh_cu !== $product->hinh_anh) {
+                Storage::disk('public')->delete($anh_cu);
+            }
         }
 
         $product->update($request->except('hinh_anh'));
