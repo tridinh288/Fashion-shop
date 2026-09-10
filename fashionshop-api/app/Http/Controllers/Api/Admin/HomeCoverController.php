@@ -4,84 +4,92 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\HomeCovers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Ảnh bìa cho hai ô bộ sưu tập "Thời trang nam" và "Thời trang nữ"
- * ngoài trang chủ. Khi chưa đặt, trang chủ tự lấy ảnh một sản phẩm đang bán.
+ * Ảnh trang chủ: ảnh lớn đầu trang và hai ô bộ sưu tập nam / nữ.
+ *
+ * Mỗi vị trí lưu ba thứ: đường dẫn ảnh, cách lấp khung (phủ kín hay vừa khung)
+ * và toạ độ tiêu điểm — để quản trị viên kéo ảnh cho phần muốn khoe nằm đúng
+ * trong khung thay vì bị cắt mất.
  */
 class HomeCoverController extends Controller
 {
-    /** Khoá lưu trong bảng settings, ứng với giá trị gioi_tinh của sản phẩm */
-    private const KEYS = [
-        'nam' => 'home_cover_nam',
-        'nu'  => 'home_cover_nu',
-    ];
-
     public function show()
     {
         return response()->json([
-            'message' => 'Lấy ảnh bìa trang chủ thành công',
-            'data'    => [
-                'nam' => Setting::get(self::KEYS['nam']),
-                'nu'  => Setting::get(self::KEYS['nu']),
-            ],
+            'message' => 'Lấy ảnh trang chủ thành công',
+            'data'    => HomeCovers::all(),
         ]);
     }
 
     public function update(Request $request)
     {
-        $request->validate([
-            'nam' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-            'nu'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-        ], [
-            'nam.image' => 'Ảnh bộ sưu tập nam không hợp lệ',
-            'nu.image'  => 'Ảnh bộ sưu tập nữ không hợp lệ',
-            'nam.max'   => 'Ảnh bộ sưu tập nam vượt quá 5MB',
-            'nu.max'    => 'Ảnh bộ sưu tập nữ vượt quá 5MB',
-        ]);
+        $rules = [];
+        $messages = [];
 
-        foreach (self::KEYS as $field => $key) {
-            if (! $request->hasFile($field)) {
-                continue;
+        foreach (HomeCovers::SLOTS as $slot => $label) {
+            $rules[$slot] = 'nullable|image|mimes:jpg,jpeg,png,webp';
+            $rules[$slot . '_fit'] = 'nullable|in:cover,contain';
+            $rules[$slot . '_pos'] = 'nullable|string|max:24';
+
+            $messages[$slot . '.image'] = "Ảnh {$label} không hợp lệ";
+            $messages[$slot . '.mimes'] = "Ảnh {$label} phải là jpg, png hoặc webp";
+        }
+
+        $request->validate($rules, $messages);
+
+        foreach (array_keys(HomeCovers::SLOTS) as $slot) {
+            if ($request->hasFile($slot)) {
+                $cu = Setting::get(HomeCovers::pathKey($slot));
+                $moi = $request->file($slot)->store('covers', 'public');
+
+                Setting::put(HomeCovers::pathKey($slot), $moi);
+
+                // Dọn ảnh cũ để thư mục không phình ra sau mỗi lần đổi
+                if ($cu && $cu !== $moi) {
+                    Storage::disk('public')->delete($cu);
+                }
             }
 
-            $cu = Setting::get($key);
-            $moi = $request->file($field)->store('covers', 'public');
+            if ($request->filled($slot . '_fit')) {
+                Setting::put(HomeCovers::fitKey($slot), $request->input($slot . '_fit'));
+            }
 
-            Setting::put($key, $moi);
-
-            // Dọn ảnh cũ để thư mục không phình ra sau mỗi lần đổi
-            if ($cu && $cu !== $moi) {
-                Storage::disk('public')->delete($cu);
+            if ($request->filled($slot . '_pos')) {
+                Setting::put(
+                    HomeCovers::posKey($slot),
+                    HomeCovers::sanitizePosition($request->input($slot . '_pos'))
+                );
             }
         }
 
         return response()->json([
-            'message' => 'Cập nhật ảnh bìa thành công',
-            'data'    => [
-                'nam' => Setting::get(self::KEYS['nam']),
-                'nu'  => Setting::get(self::KEYS['nu']),
-            ],
+            'message' => 'Cập nhật ảnh trang chủ thành công',
+            'data'    => HomeCovers::all(),
         ]);
     }
 
-    /** Gỡ ảnh của một bộ sưu tập, trang chủ quay lại dùng ảnh sản phẩm */
-    public function destroy(string $gioiTinh)
+    /** Gỡ ảnh của một vị trí, trang chủ quay lại dùng ảnh sản phẩm đang bán */
+    public function destroy(string $slot)
     {
-        if (! isset(self::KEYS[$gioiTinh])) {
-            return response()->json(['message' => 'Bộ sưu tập không hợp lệ'], 404);
+        if (! isset(HomeCovers::SLOTS[$slot])) {
+            return response()->json(['message' => 'Vị trí ảnh không hợp lệ'], 404);
         }
 
-        $key = self::KEYS[$gioiTinh];
-
-        if ($cu = Setting::get($key)) {
+        if ($cu = Setting::get(HomeCovers::pathKey($slot))) {
             Storage::disk('public')->delete($cu);
         }
 
-        Setting::put($key, null);
+        Setting::put(HomeCovers::pathKey($slot), null);
+        Setting::put(HomeCovers::fitKey($slot), null);
+        Setting::put(HomeCovers::posKey($slot), null);
 
-        return response()->json(['message' => 'Đã gỡ ảnh bìa']);
+        return response()->json([
+            'message' => 'Đã gỡ ảnh',
+            'data'    => HomeCovers::all(),
+        ]);
     }
 }

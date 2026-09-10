@@ -63,6 +63,12 @@ export default function Home() {
   });
   const adminCovers = coverRes?.data?.data ?? {};
 
+  /** Ảnh quản trị viên đặt cho một vị trí, kèm cách hiển thị đã chọn */
+  const adminCover = (slot) => {
+    const c = adminCovers[slot];
+    return c?.path ? c : null;
+  };
+
   const withImg = products.filter((p) => p.hinh_anh);
   const heroProduct = withImg[0] ?? null;
   const marquee = withImg.slice(0, 6);
@@ -74,15 +80,14 @@ export default function Home() {
     const spare = withImg.map((p) => p.hinh_anh).filter((h) => h !== nam && h !== nu);
 
     return {
-      1: adminCovers.nam ?? nam ?? spare[0] ?? null,
-      0: adminCovers.nu ?? nu ?? spare[0] ?? spare[1] ?? null,
+      1: adminCover("nam")?.path ?? nam ?? spare[0] ?? null,
+      0: adminCover("nu")?.path ?? nu ?? spare[0] ?? spare[1] ?? null,
     };
   })();
 
   // Ảnh quản trị viên đặt là ảnh bìa cắt sẵn nên phủ kín khung; ảnh sản phẩm
   // tách nền thì giữ nguyên tỉ lệ, tránh cắt cụt món đồ.
-  const isAdminCover = (gioiTinh) =>
-    Boolean(gioiTinh === 1 ? adminCovers.nam : adminCovers.nu);
+  const isAdminCover = (gioiTinh) => Boolean(adminCover(gioiTinh === 1 ? "nam" : "nu"));
 
   const handleAddToCart = async (product) => {
     if (!token) {
@@ -172,20 +177,38 @@ export default function Home() {
               <FabricCanvas />
             </div>
 
-            {heroProduct && (
-              <Link
-                to={`/products/${heroProduct.id}`}
-                className="group relative flex h-full items-center justify-center p-10"
-              >
+            {/* Ảnh quản trị viên đặt là ảnh quảng bá tự do nên phủ kín khung và
+                dẫn tới trang danh mục; nếu chưa đặt thì lấy một sản phẩm đang
+                bán, giữ nguyên tỉ lệ kèm nhãn tên và dẫn thẳng tới sản phẩm. */}
+            {adminCover("hero") ? (
+              <Link to="/category" className="group relative block h-full overflow-hidden">
                 <img
-                  src={`${IMG_BASE}${heroProduct.hinh_anh}`}
-                  alt={heroProduct.ten_sp}
-                  className="max-h-[85%] w-auto object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.16)] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  src={`${IMG_BASE}${adminCover("hero").path}`}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  style={{
+                    objectFit: adminCover("hero").fit,
+                    objectPosition: adminCover("hero").pos,
+                  }}
                 />
-                <span className="absolute bottom-7 left-7 rounded-full bg-paper/85 px-4 py-2 text-[12px] font-medium text-ink backdrop-blur-sm">
-                  {heroProduct.ten_sp}
-                </span>
               </Link>
+            ) : (
+              heroProduct && (
+                <Link
+                  to={`/products/${heroProduct.id}`}
+                  className="group relative flex h-full items-center justify-center p-10"
+                >
+                  <img
+                    src={`${IMG_BASE}${heroProduct.hinh_anh}`}
+                    alt={heroProduct.ten_sp}
+                    className="max-h-[85%] w-auto object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.16)] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                  <span className="absolute bottom-7 left-7 rounded-full bg-paper/85 px-4 py-2 text-[12px] font-medium text-ink backdrop-blur-sm">
+                    {heroProduct.ten_sp}
+                  </span>
+                </Link>
+              )
             )}
           </motion.div>
         </div>
@@ -236,8 +259,16 @@ export default function Home() {
                     aria-hidden="true"
                     className={
                       isAdminCover(c.gioiTinh)
-                        ? "absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        ? "absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-105"
                         : "absolute right-4 top-1/2 h-[92%] w-1/2 -translate-y-1/2 object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                    }
+                    style={
+                      isAdminCover(c.gioiTinh)
+                        ? {
+                            objectFit: adminCover(c.gioiTinh === 1 ? "nam" : "nu").fit,
+                            objectPosition: adminCover(c.gioiTinh === 1 ? "nam" : "nu").pos,
+                          }
+                        : undefined
                     }
                   />
                 )}

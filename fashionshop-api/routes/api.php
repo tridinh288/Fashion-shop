@@ -101,7 +101,7 @@ Route::prefix('v1')->group(function () use ($products, $productById, $orders) {
         // Ảnh bìa trang chủ
         Route::get('/home-covers', [HomeCoverController::class, 'show']);
         Route::post('/home-covers', [HomeCoverController::class, 'update']);
-        Route::delete('/home-covers/{gioiTinh}', [HomeCoverController::class, 'destroy']);
+        Route::delete('/home-covers/{slot}', [HomeCoverController::class, 'destroy']);
 
         // Orders
         Route::get($orders, [AdminOrderController::class, 'index']);
