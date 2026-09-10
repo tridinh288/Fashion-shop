@@ -679,7 +679,7 @@ Size hợp lệ: `S` / `M` / `L` / `XL`
 | `so_luong` | integer | ✅ | Số lượng tồn kho |
 | `gioi_tinh` | `0` hoặc `1` | ✅ | `1` = Nam, `0` = Nữ |
 | `category_id` | integer | — | ID danh mục |
-| `hinh_anh` | file | — | Ảnh (jpg/jpeg/png/webp, max 5MB) |
+| `hinh_anh` | file | — | Ảnh (jpg/jpeg/png/webp) |
 
 ---
 
