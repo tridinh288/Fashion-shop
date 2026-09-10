@@ -65,7 +65,102 @@ class DatabaseSeeder extends Seeder
             ['ten_sp' => 'Quần Short Nữ Kaki Lưng Cao',      'gia' => 185000, 'gia_cu' => 250000, 'mo_ta' => 'Quần short kaki lưng cao tôn dáng, năng động cho ngày hè.', 'so_luong' => 55, 'gioi_tinh' => 0, 'category_id' => $catIds['Quần Short']],
         ];
 
+        // Ảnh sản phẩm, gom theo nhóm danh mục + giới tính.
+        // Danh sách này khớp với database/fix_images.sql; mọi file đều nằm sẵn
+        // trong storage/app/public/products nên bản demo luôn có hình.
+        $imagePools = [
+            'ao' => [
+                'products/0qZgVo1DlOSkUltmNm31Dm6ZMtXg340KRIAFcCja.png',
+                'products/1d9zxdLcRjrY4AXf2KMJKROltLLSCZCGiNaVve2X.png',
+                'products/ELXmoSC11ClGVr8vEcYnK0WUZwdAZgxbzckYNahH.png',
+                'products/IAUKoaiMbJN4HQB7jKXHCeZzBITUEfhW4ChLOW2b.png',
+                'products/QqnSI7kfQbz9h1tqRYeFye0fDOgDp2JQqeFlV7XO.png',
+                'products/X8IzX0JOPbWejrlrQCq8D6FTqv8QDoAS07tt1i1E.png',
+                'products/d4zr4OPofFe3tAo8JV7qvqWYBeJz114sO1AfIaCM.png',
+                'products/hsJocfs8RVEhkyE2DY1lgq37V4M82A748OGMcKuf.png',
+                'products/nDu62q34y1BZX5omROjw5aetRURPgAyp1I68D9ad.png',
+                'products/o5AZUSEQWyHSUy6gSYDbK5Id7UlrBR9EgL8zMOUY.png',
+                'products/tvDNxx7fLmomL7rMjqYKy3kIlWbCzIMUrg6zZvB7.png',
+                'products/0EydYSJ5hBb942DdEUfrbiXPJdx9dHHBKin0pEJd.png',
+                'products/XntHkvWIbZyfeZAFbvIfDrgMjcPsZ2rdf7dfCvHg.png',
+                'products/ohtkN7q479lzBYmCr8frjNhY7Hep89J5xqMEHikr.png',
+                'products/q21gPtS0euTw0GGD1mv9VZO14Ap9EfGOmhrVy6Oy.png',
+                'products/qe84CPzmdjHiG95kMkyqn7uAZ6AGS3UP2YYvf4kh.png',
+                'products/vQCodBNEMiMqq0cs8ILlm0VNO3GZnh0PelxzFFEM.png',
+            ],
+            'jean_nam' => [
+                'products/6ORezVoLQ4ypWIK3Klq9GBIJ0x9frvSqWFsBl2JL.png',
+                'products/CMnew5jb6KUun6hC026sOKJMEmDQnxUDJti4tuWT.png',
+                'products/SmApiDSzATaIQqhIRrFa8YYWobhuYRce6t87owck.png',
+                'products/fHYV4K6n0eZTVpdsMl9ts22NzB3DNPM2yHJlhU2B.png',
+                'products/r1c1YQ1wZteltHaWVEmjZROzkGZA2S1HIGoLnrD2.png',
+            ],
+            'jean_nu' => [
+                'products/OxVLo0Q8zyw5H4L1PAfi0VjXZwnTymiI1ZrWqHz1.png',
+                'products/WNgeDdG8P7UJtPLfvyGJiFBVTf7HTOpuxeNORi5k.png',
+                'products/lEFVlVaeRyCyeiWhvTZ2GFHATTh5VqdX3qET5sxf.png',
+                'products/xc8EKAefrtOiBjxXOVT65iKRWkMt8jpet5584P8a.png',
+                'products/zgORCAZfrfmkIaqQG2y7DEMj0qFsQ8pQL5YhbX7g.png',
+            ],
+            'kaki_nam' => [
+                'products/K1P7UPDUIOpi9k3tAys6MCfxviFM93OY1aAMuCZi.png',
+                'products/KR6MpBJbbgX7SK2GlDdQZ801IOL2q3jNUISHfYKz.png',
+                'products/T4bRuI3emwr15o2vbVP9cFwCZjeCTWZsH6dyOz2a.png',
+                'products/krxjYCASSKtlVcgjws7S7gtGiUvR3edaMgbPsyf4.png',
+                'products/xDoKAQjG4AV96Czu541uts1u6YjFRCqvDBEECIwX.png',
+            ],
+            'kaki_nu' => [
+                'products/GTyKDIULZwNHTy8iNSxaLP1kXkcmunyV1rabEIks.png',
+                'products/SGUtf6N6haYMh4AaQWfgrqYLV2hXmxtIIYCvKQ2l.png',
+                'products/quantayongxuongnam.png',
+                'products/tWgLPbjJh6GJPkTZqouB3jIVKxJFtylKh7bPYbUp.png',
+                'products/trEXWuWREZZ5q2ThJ5NzwdM02AlOj1cAXCxtdctw.png',
+                'products/wRUF1b7hyhiy06yWRjgaq3yfNJZJxdUITsYdtYrf.png',
+            ],
+            'quan_tay' => [
+                'products/quantayongxuongnam.png',
+                'products/K1P7UPDUIOpi9k3tAys6MCfxviFM93OY1aAMuCZi.png',
+            ],
+            'short_nam' => [
+                'products/EDfBIulu9Uf4pBWjCvuhUMEox2llwNAmgmUsRROf.png',
+                'products/TTwBwctqgRTzlV5ihwjVb0aYwn6GPPoPha1hDxwc.png',
+                'products/XXs38CZ56ly0ft8V9S7HNZS5umd8HCx63fpgFXpS.png',
+                'products/g3vUPevQ4jIFpcLBIPdeksvAraEXKGPMZJ1dljLb.png',
+                'products/jG7KjQaLeGkvtQFvxVPA1SyQTEXiLkug9Kju7iI1.png',
+                'products/vU88rbcIMkOhJ0yK59WHr6VSqfCK3y2slzkh7Aoy.png',
+            ],
+            'short_nu' => [
+                'products/j0n7PZcXEUMyn09u45sqPv4bckilsWY5d5maVIlq.png',
+                'products/vNdSsgKH42i0cpH0rcHAWItclMEs9Zqt1V1DIn3h.png',
+                'products/vluLz8z9znqInNrUmBSpuGvAwrKiPm2M5yTTsmnw.png',
+            ],
+        ];
+
+        // Danh mục nào dùng nhóm ảnh nào
+        $poolFor = function (string $category, int $gioiTinh): string {
+            $nam = $gioiTinh === 1;
+
+            return match ($category) {
+                'Quần Tây'   => 'quan_tay',
+                'Quần Jean'  => $nam ? 'jean_nam' : 'jean_nu',
+                'Quần Kaki'  => $nam ? 'kaki_nam' : 'kaki_nu',
+                'Quần Short' => $nam ? 'short_nam' : 'short_nu',
+                default      => 'ao',
+            };
+        };
+
+        $catNameById = array_flip($catIds->toArray());
+        $used = [];
+
         foreach ($products as $p) {
+            $pool = $poolFor($catNameById[$p['category_id']], $p['gioi_tinh']);
+            $images = $imagePools[$pool];
+
+            // Xoay vòng trong nhóm để các sản phẩm cùng loại không trùng ảnh
+            $index = $used[$pool] ?? 0;
+            $used[$pool] = $index + 1;
+            $p['hinh_anh'] = $images[$index % count($images)];
+
             Product::firstOrCreate(['ten_sp' => $p['ten_sp']], $p);
         }
     }
