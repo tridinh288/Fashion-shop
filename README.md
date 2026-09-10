@@ -837,8 +837,8 @@ Toàn bộ hệ thống được deploy **miễn phí** và chạy 24/7, độc 
               └──────────┬───────────┘
                          │  SSL/TLS
               ┌──────────▼───────────┐
-              │   Aiven MySQL 8       │
-              │   (Free 1GB)          │
+              │   TiDB Serverless     │
+              │   (MySQL-compatible)  │
               └──────────────────────┘
 ```
 
@@ -847,12 +847,14 @@ Toàn bộ hệ thống được deploy **miễn phí** và chạy 24/7, độc 
 | API (Laravel) | Render — Web Service (Docker) | Build từ `fashionshop-api/Dockerfile`; entrypoint tự chạy `migrate` + `artisan serve` |
 | Storefront | Render — Static Site | Build Vite → phục vụ qua CDN, luôn bật |
 | Admin | Render — Static Site | Build Vite → phục vụ qua CDN, luôn bật |
-| Database | Aiven — MySQL 8 (Free 1GB) | Kết nối bắt buộc SSL/TLS |
+| Database | TiDB Cloud — Serverless (tương thích MySQL) | Kết nối bắt buộc SSL/TLS |
 
 **Điểm cấu hình khi deploy:**
 
 - Frontend đọc URL API qua biến build-time `VITE_API_URL` → không hardcode.
-- API kết nối DB qua các biến `DB_*` và `MYSQL_ATTR_SSL_CA` (chứng chỉ CA của Aiven, commit kèm image).
+- API kết nối DB qua các biến `DB_*` và `MYSQL_ATTR_SSL_CA` (trỏ tới kho chứng chỉ hệ thống `/etc/ssl/certs/ca-certificates.crt` trong image).
+- Entrypoint tự chạy `migrate`, và tự `db:seed` khi bảng `products` còn rỗng — nên trỏ API sang một database mới là nó tự nạp đủ danh mục, sản phẩm và đơn hàng mẫu.
+- Đặt `DB_CONNECTION=sqlite` sẽ chạy demo bằng SQLite ngay trong container, không cần database ngoài (dữ liệu sẽ mất khi container khởi động lại).
 - `config/cors.php` mở CORS cho request cross-origin từ frontend.
 - Static Site cấu hình rewrite `/* → /index.html` để React Router hoạt động khi reload trang con.
 - Container bind cổng động qua `${PORT}` do Render cấp.
@@ -861,4 +863,4 @@ Toàn bộ hệ thống được deploy **miễn phí** và chạy 24/7, độc 
 
 ---
 
-*Được xây dựng với Laravel 11 + React 19 · Deploy trên Render + Aiven*
+*Được xây dựng với Laravel 11 + React 19 · Deploy trên Render + TiDB Cloud*
