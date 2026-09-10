@@ -145,7 +145,6 @@ export default function Home() {
             <motion.div
               variants={fadeUp}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-wrap gap-3"
             >
               <Link
                 to="/category"
@@ -156,12 +155,6 @@ export default function Home() {
                   size={16}
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
-              </Link>
-              <Link
-                to="/category?gioi_tinh=1"
-                className="inline-flex items-center rounded-full border border-ink/15 px-7 py-3.5 text-[13px] font-semibold text-ink transition-colors duration-300 hover:border-ink hover:bg-tile"
-              >
-                Hàng nam
               </Link>
             </motion.div>
           </motion.div>
