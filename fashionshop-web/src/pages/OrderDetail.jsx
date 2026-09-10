@@ -38,7 +38,7 @@ export default function OrderDetail() {
   };
 
   if (isLoading) return <LoadingSpinner />;
-  if (!order) return <div className="text-center py-20 text-neutral-600">Không tìm thấy đơn hàng</div>;
+  if (!order) return <div className="text-center py-20 text-ink-faint">Không tìm thấy đơn hàng</div>;
 
   // Quan hệ là "details" (không phải order_details)
   const details = order.details || [];
@@ -47,8 +47,8 @@ export default function OrderDetail() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-100">Đơn Hàng #{order.id}</h1>
-          <p className="text-sm text-neutral-600 mt-1">
+          <h1 className="text-2xl font-bold text-ink">Đơn Hàng #{order.id}</h1>
+          <p className="text-sm text-ink-faint mt-1">
             {new Date(order.created_at).toLocaleDateString("vi-VN", {
               day: "2-digit", month: "2-digit", year: "numeric",
               hour: "2-digit", minute: "2-digit",
@@ -59,29 +59,29 @@ export default function OrderDetail() {
       </div>
 
       {/* Products */}
-      <div className="bg-ink-1 border overflow-hidden mb-4">
-        <div className="px-4 py-3 bg-ink border-b font-semibold text-neutral-300 text-sm">Sản Phẩm</div>
+      <div className="bg-white border rounded-xl overflow-hidden mb-4">
+        <div className="px-4 py-3 bg-tile-warm border-b font-semibold text-ink-soft text-sm">Sản Phẩm</div>
         {details.map((item) => {
           const img = item.product?.hinh_anh
             ? `${IMG_BASE}${item.product.hinh_anh}`
             : "https://placehold.co/64x64?text=SP";
           return (
             <div key={item.id} className="flex items-center gap-4 px-4 py-3 border-b last:border-b-0">
-              <img src={img} alt={item.product?.ten_sp} className="w-14 h-14 object-cover border" />
+              <img src={img} alt={item.product?.ten_sp} className="w-14 h-14 object-cover rounded-lg border" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-neutral-100">{item.product?.ten_sp || "Sản phẩm"}</p>
-                <p className="text-xs text-neutral-600">Size: {item.size} × {item.quantity}</p>
+                <p className="text-sm font-medium text-ink">{item.product?.ten_sp || "Sản phẩm"}</p>
+                <p className="text-xs text-ink-faint">Size: {item.size} × {item.quantity}</p>
               </div>
-              <p className="text-sm font-bold text-neutral-300">{formatCurrency(item.price * item.quantity)}</p>
+              <p className="text-sm font-bold text-ink-soft">{formatCurrency(item.price * item.quantity)}</p>
             </div>
           );
         })}
       </div>
 
       {/* Delivery */}
-      <div className="bg-ink-1 border p-4 mb-4">
-        <p className="font-semibold text-neutral-300 text-sm mb-3">Thông Tin Giao Hàng</p>
-        <div className="text-sm text-neutral-400 space-y-1">
+      <div className="bg-white border rounded-xl p-4 mb-4">
+        <p className="font-semibold text-ink-soft text-sm mb-3">Thông Tin Giao Hàng</p>
+        <div className="text-sm text-ink-soft space-y-1">
           <p><span className="font-medium">Người nhận:</span> {order.fullname}</p>
           <p><span className="font-medium">SĐT:</span> {order.phone}</p>
           <p><span className="font-medium">Địa chỉ:</span> {order.address}</p>
@@ -90,8 +90,8 @@ export default function OrderDetail() {
       </div>
 
       {/* Total */}
-      <div className="bg-ink-1 border p-4 mb-6">
-        <div className="flex justify-between font-bold text-accent text-base">
+      <div className="bg-white border rounded-xl p-4 mb-6">
+        <div className="flex justify-between font-bold text-ink text-base">
           <span>Tổng cộng (đã gồm ship)</span>
           <span>{formatCurrency(order.total)}</span>
         </div>
@@ -101,7 +101,7 @@ export default function OrderDetail() {
         <button
           onClick={handleCancel}
           disabled={cancelling}
-          className="w-full border-2 border-red-400 text-red-500 font-semibold py-3 hover:bg-red-50 disabled:opacity-50 transition-colors"
+          className="w-full border-2 border-red-400 text-red-500 font-semibold py-3 rounded-xl hover:bg-red-50 disabled:opacity-50 transition-colors"
         >
           {cancelling ? "Đang hủy..." : "Hủy Đơn Hàng"}
         </button>

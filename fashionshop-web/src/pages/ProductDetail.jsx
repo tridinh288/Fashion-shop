@@ -98,7 +98,7 @@ export default function ProductDetail() {
   };
 
   if (isLoading) return <LoadingSpinner />;
-  if (!product) return <div className="text-center py-20 text-neutral-600">Không tìm thấy sản phẩm</div>;
+  if (!product) return <div className="text-center py-20 text-ink-faint">Không tìm thấy sản phẩm</div>;
 
   const imgSrc = product.hinh_anh
     ? `${IMG_BASE}${product.hinh_anh}`
@@ -108,43 +108,43 @@ export default function ProductDetail() {
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Image */}
-        <div className="overflow-hidden bg-ink-1">
+        <div className="rounded-2xl overflow-hidden bg-tile">
           <img src={imgSrc} alt={product.ten_sp} className="w-full h-auto object-cover" />
         </div>
 
         {/* Info */}
         <div>
           <div className="flex items-start gap-2 mb-2">
-            <h1 className="text-2xl font-bold text-neutral-100 flex-1">{product.ten_sp}</h1>
+            <h1 className="text-2xl font-bold text-ink flex-1">{product.ten_sp}</h1>
             <SaleBadge price={product.gia} originalPrice={product.gia_cu} />
           </div>
 
           {avgRating > 0 && (
             <div className="flex items-center gap-2 mb-3">
               <StarRating rating={avgRating} />
-              <span className="text-sm text-neutral-500">({reviews.length} đánh giá)</span>
+              <span className="text-sm text-ink-soft">({reviews.length} đánh giá)</span>
             </div>
           )}
 
           <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-3xl font-bold text-accent">{formatCurrency(product.gia)}</span>
+            <span className="text-3xl font-bold text-ink">{formatCurrency(product.gia)}</span>
             {product.gia_cu > product.gia && (
-              <span className="text-lg text-neutral-600 line-through">{formatCurrency(product.gia_cu)}</span>
+              <span className="text-lg text-ink-faint line-through">{formatCurrency(product.gia_cu)}</span>
             )}
           </div>
 
-          <p className="text-neutral-400 text-sm leading-relaxed mb-6">{product.mo_ta}</p>
+          <p className="text-ink-soft text-sm leading-relaxed mb-6">{product.mo_ta}</p>
 
           {/* Size */}
           <div className="mb-5">
-            <p className="text-sm font-semibold text-neutral-300 mb-2">Kích Cỡ</p>
+            <p className="text-sm font-semibold text-ink-soft mb-2">Kích Cỡ</p>
             <div className="flex gap-2">
               {SIZES.map((s) => (
                 <button
                   key={s}
                   onClick={() => setSize(s)}
-                  className={`w-12 h-12  border-2 text-sm font-semibold transition-colors ${
-                    size === s ? "border-accent bg-accent text-white" : "border-line hover:border-accent"
+                  className={`w-12 h-12 rounded-lg border-2 text-sm font-semibold transition-colors ${
+                    size === s ? "border-ink bg-ink text-white" : "border-line hover:border-ink"
                   }`}
                 >
                   {s}
@@ -155,18 +155,18 @@ export default function ProductDetail() {
 
           {/* Qty */}
           <div className="mb-6">
-            <p className="text-sm font-semibold text-neutral-300 mb-2">Số Lượng</p>
+            <p className="text-sm font-semibold text-ink-soft mb-2">Số Lượng</p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="w-10 h-10 border flex items-center justify-center text-lg font-bold hover:bg-ink"
+                className="w-10 h-10 rounded-lg border flex items-center justify-center text-lg font-bold hover:bg-tile-warm"
               >−</button>
               <span className="w-12 text-center font-semibold">{qty}</span>
               <button
                 onClick={() => setQty((q) => Math.min(product.so_luong, q + 1))}
-                className="w-10 h-10 border flex items-center justify-center text-lg font-bold hover:bg-ink"
+                className="w-10 h-10 rounded-lg border flex items-center justify-center text-lg font-bold hover:bg-tile-warm"
               >+</button>
-              <span className="text-sm text-neutral-600 ml-2">Còn {product.so_luong} sản phẩm</span>
+              <span className="text-sm text-ink-faint ml-2">Còn {product.so_luong} sản phẩm</span>
             </div>
           </div>
 
@@ -174,13 +174,13 @@ export default function ProductDetail() {
           <div className="flex gap-3">
             <button
               onClick={() => handleAddToCart(false)}
-              className="flex-1 flex items-center justify-center gap-2 border-2 border-accent text-accent font-semibold py-3 hover:bg-accent/10 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 border-2 border-ink text-ink font-semibold py-3 rounded-xl hover:bg-tile transition-colors"
             >
               <ShoppingCart size={18} /> Thêm Vào Giỏ
             </button>
             <button
               onClick={() => handleAddToCart(true)}
-              className="flex-1 flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-white font-semibold py-3 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 bg-ink hover:bg-black text-white font-semibold py-3 rounded-xl transition-colors"
             >
               <Zap size={18} /> Mua Ngay
             </button>
@@ -190,14 +190,14 @@ export default function ProductDetail() {
 
       {/* Reviews */}
       <div className="mt-14">
-        <h2 className="text-xl font-bold text-neutral-100 mb-6">Đánh Giá Sản Phẩm</h2>
+        <h2 className="text-xl font-bold text-ink mb-6">Đánh Giá Sản Phẩm</h2>
 
         {token && (
-          <form onSubmit={handleSubmit(onReviewSubmit)} className="bg-ink p-5 mb-8 border">
-            <p className="font-semibold text-neutral-300 mb-3">Viết đánh giá của bạn</p>
+          <form onSubmit={handleSubmit(onReviewSubmit)} className="bg-tile-warm rounded-xl p-5 mb-8 border">
+            <p className="font-semibold text-ink-soft mb-3">Viết đánh giá của bạn</p>
             <div className="mb-3">
-              <label className="text-sm text-neutral-400 mb-1 block">Sao đánh giá</label>
-              <select {...register("rating")} className="border px-3 py-2 text-sm outline-none focus:border-accent">
+              <label className="text-sm text-ink-soft mb-1 block">Sao đánh giá</label>
+              <select {...register("rating")} className="border rounded-lg px-3 py-2 text-sm outline-none focus:border-ink">
                 {[5, 4, 3, 2, 1].map((n) => (
                   <option key={n} value={n}>{n} sao</option>
                 ))}
@@ -207,13 +207,13 @@ export default function ProductDetail() {
               {...register("comment")}
               rows={3}
               placeholder="Chia sẻ trải nghiệm của bạn..."
-              className="w-full border px-3 py-2 text-sm outline-none focus:border-accent resize-none"
+              className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-ink resize-none"
             />
             {errors.comment && <p className="text-red-500 text-xs mt-1">{errors.comment.message}</p>}
             <button
               type="submit"
               disabled={reviewLoading}
-              className="mt-3 bg-accent hover:bg-accent-hover disabled:bg-accent/40 text-white text-sm font-semibold px-6 py-2 transition-colors"
+              className="mt-3 bg-ink hover:bg-black disabled:bg-ink/40 text-white text-sm font-semibold px-6 py-2 rounded-lg transition-colors"
             >
               {reviewLoading ? "Đang gửi..." : "Gửi Đánh Giá"}
             </button>
@@ -221,21 +221,21 @@ export default function ProductDetail() {
         )}
 
         {reviews.length === 0 ? (
-          <p className="text-neutral-600 text-center py-8">Chưa có đánh giá nào</p>
+          <p className="text-ink-faint text-center py-8">Chưa có đánh giá nào</p>
         ) : (
           <div className="space-y-4">
             {reviews.map((r) => (
-              <div key={r.id} className="bg-ink-1 border p-4">
+              <div key={r.id} className="bg-white border rounded-xl p-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-sm text-neutral-100">{r.user?.fullname || "Ẩn danh"}</span>
-                  <span className="text-xs text-neutral-600">{new Date(r.created_at).toLocaleDateString("vi-VN")}</span>
+                  <span className="font-semibold text-sm text-ink">{r.user?.fullname || "Ẩn danh"}</span>
+                  <span className="text-xs text-ink-faint">{new Date(r.created_at).toLocaleDateString("vi-VN")}</span>
                 </div>
                 <StarRating rating={r.rating} size={14} />
-                <p className="text-sm text-neutral-300 mt-2">{r.comment}</p>
+                <p className="text-sm text-ink-soft mt-2">{r.comment}</p>
                 {r.shop_reply && (
-                  <div className="mt-3 bg-accent/10 p-3 border-l-4 border-accent">
-                    <p className="text-xs font-semibold text-accent mb-1">Phản hồi từ Shop</p>
-                    <p className="text-sm text-neutral-300">{r.shop_reply}</p>
+                  <div className="mt-3 bg-tile rounded-lg p-3 border-l-4 border-ink">
+                    <p className="text-xs font-semibold text-ink mb-1">Phản hồi từ Shop</p>
+                    <p className="text-sm text-ink-soft">{r.shop_reply}</p>
                   </div>
                 )}
               </div>

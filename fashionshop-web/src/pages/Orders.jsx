@@ -18,7 +18,7 @@ export default function Orders() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* 🔥 luôn render h1 để test không fail */}
-      <h1 className="text-2xl font-bold text-neutral-100 mb-6">
+      <h1 className="text-2xl font-bold text-ink mb-6">
         Lịch Sử Đơn Hàng
       </h1>
 
@@ -28,11 +28,11 @@ export default function Orders() {
         <p className="text-center text-red-400">Không tải được đơn hàng</p>
       ) : orders.length === 0 ? (
         <div className="text-center py-20">
-          <Package size={64} className="text-neutral-800 mx-auto mb-4" />
-          <p className="text-neutral-500 text-lg mb-4">Chưa có đơn hàng nào</p>
+          <Package size={64} className="text-zinc-200 mx-auto mb-4" />
+          <p className="text-ink-soft text-lg mb-4">Chưa có đơn hàng nào</p>
           <Link
             to="/category"
-            className="bg-accent text-white px-6 py-2.5 font-semibold hover:bg-accent-hover transition-colors"
+            className="bg-ink text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-black transition-colors"
           >
             Mua Sắm Ngay
           </Link>
@@ -43,20 +43,20 @@ export default function Orders() {
             <Link
               key={order.id}
               to={`/orders/${order.id}`}
-              className="block bg-ink-1 border p-4 hover:border-accent transition-all"
+              className="block bg-white border rounded-xl p-4 hover:border-ink hover:shadow-sm transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-neutral-100">
+                  <p className="font-semibold text-ink">
                     Đơn #{order.id}
                   </p>
-                  <p className="text-sm text-neutral-600 mt-0.5">
+                  <p className="text-sm text-ink-faint mt-0.5">
                     {new Date(order.created_at).toLocaleString("vi-VN")}
                   </p>
                 </div>
 
                 <div className="text-right">
-                  <p className="font-bold text-accent mb-1">
+                  <p className="font-bold text-ink mb-1">
                     {formatCurrency(order.total)}
                   </p>
                   <StatusBadge status={order.status} />

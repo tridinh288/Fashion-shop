@@ -10,8 +10,8 @@ export default function StarRating({ rating, max = 5, size = 16 }) {
           strokeWidth={1.5}
           className={
             i < Math.round(rating)
-              ? "fill-accent text-accent"
-              : "text-neutral-700"
+              ? "fill-amber-400 text-amber-400"
+              : "text-zinc-300"
           }
         />
       ))}

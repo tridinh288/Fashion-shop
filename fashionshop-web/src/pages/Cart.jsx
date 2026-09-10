@@ -84,17 +84,17 @@ export default function Cart() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-neutral-100 mb-6">Giỏ Hàng</h1>
+      <h1 className="text-2xl font-bold text-ink mb-6">Giỏ Hàng</h1>
 
       {isLoading && !isError ? (
-        <div className="text-center py-20 text-neutral-600">Đang tải...</div>
+        <div className="text-center py-20 text-ink-faint">Đang tải...</div>
       ) : items.length === 0 ? (
         <div className="text-center py-20">
-          <ShoppingBag size={64} className="text-neutral-800 mx-auto mb-4" />
-          <p className="text-neutral-500 text-lg mb-4">Giỏ hàng trống</p>
+          <ShoppingBag size={64} className="text-zinc-200 mx-auto mb-4" />
+          <p className="text-ink-soft text-lg mb-4">Giỏ hàng trống</p>
           <Link
             to="/category"
-            className="bg-accent text-white px-6 py-2.5 font-semibold hover:bg-accent-hover transition-colors"
+            className="bg-ink text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-black transition-colors"
           >
             Tiếp Tục Mua Sắm
           </Link>
@@ -103,15 +103,15 @@ export default function Cart() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Items */}
           <div className="flex-1">
-            <div className="bg-ink-1 border overflow-hidden">
-              <div className="flex items-center gap-3 px-4 py-3 bg-ink border-b">
+            <div className="bg-white rounded-xl border overflow-hidden">
+              <div className="flex items-center gap-3 px-4 py-3 bg-tile-warm border-b">
                 <input
                   type="checkbox"
                   checked={selected.length === items.length && items.length > 0}
                   onChange={toggleAll}
                   className="accent-blue-600"
                 />
-                <span className="text-sm font-medium text-neutral-400">
+                <span className="text-sm font-medium text-ink-soft">
                   Chọn tất cả ({items.length})
                 </span>
                 {selected.length > 0 && (
@@ -139,23 +139,23 @@ export default function Cart() {
                     <img
                       src={img}
                       alt={item.product?.ten_sp}
-                      className="w-16 h-16 object-cover border"
+                      className="w-16 h-16 object-cover rounded-lg border"
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-neutral-100 line-clamp-2">
+                      <h3 className="text-sm font-medium text-ink line-clamp-2">
                         <Link
                           to={`/products/${item.product?.id}`}
-                          className="hover:text-accent"
+                          className="hover:text-ink"
                         >
                           {item.product?.ten_sp}
                         </Link>
                       </h3>
-                      <p className="text-xs text-neutral-600 mt-0.5">Size: {item.size}</p>
+                      <p className="text-xs text-ink-faint mt-0.5">Size: {item.size}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleQtyChange(item.id, item.quantity - 1)}
-                        className="w-7 h-7 border rounded flex items-center justify-center hover:bg-ink"
+                        className="w-7 h-7 border rounded flex items-center justify-center hover:bg-tile-warm"
                       >
                         -
                       </button>
@@ -164,21 +164,21 @@ export default function Cart() {
                       </span>
                       <button
                         onClick={() => handleQtyChange(item.id, item.quantity + 1)}
-                        className="w-7 h-7 border rounded flex items-center justify-center hover:bg-ink"
+                        className="w-7 h-7 border rounded flex items-center justify-center hover:bg-tile-warm"
                       >
                         +
                       </button>
                     </div>
                     <div className="text-right min-w-20">
-                      <p className="text-sm font-bold text-accent">
+                      <p className="text-sm font-bold text-ink">
                         {formatCurrency((item.product?.gia || 0) * item.quantity)}
                       </p>
-                      <p className="text-xs text-neutral-600">{formatCurrency(item.product?.gia || 0)}/cái</p>
+                      <p className="text-xs text-ink-faint">{formatCurrency(item.product?.gia || 0)}/cái</p>
                     </div>
                     <button
                       onClick={() => handleDelete(item.id)}
                       disabled={deletingIds.includes(item.id)}
-                      className="text-neutral-700 hover:text-red-500 transition-colors ml-1 disabled:opacity-50"
+                      className="text-ink-faint hover:text-red-500 transition-colors ml-1 disabled:opacity-50"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -190,32 +190,32 @@ export default function Cart() {
 
           {/* Summary */}
           <div className="lg:w-72 shrink-0">
-            <div className="bg-ink-1 border p-5 sticky top-20">
-              <h2 className="font-bold text-neutral-100 mb-4">Tóm Tắt Đơn Hàng</h2>
+            <div className="bg-white border rounded-xl p-5 sticky top-20">
+              <h2 className="font-bold text-ink mb-4">Tóm Tắt Đơn Hàng</h2>
               <div className="space-y-2 text-sm mb-4">
-                <div className="flex justify-between text-neutral-400">
+                <div className="flex justify-between text-ink-soft">
                   <span>Tạm tính</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
-                <div className="flex justify-between text-neutral-400">
+                <div className="flex justify-between text-ink-soft">
                   <span>Phí ship</span>
                   <span>{formatCurrency(SHIPPING_FEE || 30000)}</span>
                 </div>
                 <hr />
-                <div className="flex justify-between font-bold text-neutral-100 text-base">
+                <div className="flex justify-between font-bold text-ink text-base">
                   <span>Tổng cộng</span>
-                  <span className="text-accent">{formatCurrency(total)}</span>
+                  <span className="text-ink">{formatCurrency(total)}</span>
                 </div>
               </div>
               <Link
                 to="/checkout"
-                className="block w-full text-center bg-accent hover:bg-accent-hover text-white font-semibold py-3 transition-colors"
+                className="block w-full text-center bg-ink hover:bg-black text-white font-semibold py-3 rounded-xl transition-colors"
               >
                 Tiến Hành Thanh Toán
               </Link>
               <Link
                 to="/category"
-                className="block text-center text-sm text-accent hover:underline mt-3"
+                className="block text-center text-sm text-ink hover:underline mt-3"
               >
                 Tiếp tục mua sắm
               </Link>

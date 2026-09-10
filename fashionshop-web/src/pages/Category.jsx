@@ -80,14 +80,14 @@ export default function Category() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <aside className="md:w-52 shrink-0">
-          <div className="bg-ink-1 border p-4 sticky top-20">
+          <div className="bg-white rounded-xl border p-4 sticky top-20">
             <div className="flex items-center gap-2 mb-4">
-              <SlidersHorizontal size={16} className="text-neutral-500" />
-              <span className="font-semibold text-neutral-300 text-sm">Bộ Lọc</span>
+              <SlidersHorizontal size={16} className="text-ink-soft" />
+              <span className="font-semibold text-ink-soft text-sm">Bộ Lọc</span>
             </div>
 
             <div className="mb-5">
-              <p className="text-xs font-semibold text-neutral-500 uppercase mb-2">Giới Tính</p>
+              <p className="text-xs font-semibold text-ink-soft uppercase mb-2">Giới Tính</p>
               {[
                 { val: "",  label: "Tất cả" },
                 { val: "1", label: "Nam"     },
@@ -101,13 +101,13 @@ export default function Category() {
                     onChange={() => setFilter("gioi_tinh", g.val)}
                     className="accent-blue-600"
                   />
-                  <span className="text-sm text-neutral-300">{g.label}</span>
+                  <span className="text-sm text-ink-soft">{g.label}</span>
                 </label>
               ))}
             </div>
 
             <div>
-              <p className="text-xs font-semibold text-neutral-500 uppercase mb-2">Danh Mục</p>
+              <p className="text-xs font-semibold text-ink-soft uppercase mb-2">Danh Mục</p>
               <label className="flex items-center gap-2 py-1.5 cursor-pointer">
                 <input
                   type="radio"
@@ -116,7 +116,7 @@ export default function Category() {
                   onChange={() => setFilter("category_id", "")}
                   className="accent-blue-600"
                 />
-                <span className="text-sm text-neutral-300">Tất cả</span>
+                <span className="text-sm text-ink-soft">Tất cả</span>
               </label>
               {categories.map((c) => (
                 <label key={c.id} className="flex items-center gap-2 py-1.5 cursor-pointer">
@@ -127,7 +127,7 @@ export default function Category() {
                     onChange={() => setFilter("category_id", String(c.id))}
                     className="accent-blue-600"
                   />
-                  <span className="text-sm text-neutral-300">{c.ten_danh_muc}</span>
+                  <span className="text-sm text-ink-soft">{c.ten_danh_muc}</span>
                 </label>
               ))}
             </div>
@@ -137,10 +137,10 @@ export default function Category() {
         {/* Products */}
         <div className="flex-1">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-neutral-100">
+            <h1 className="text-xl font-bold text-ink">
               {gioi_tinh === "1" ? "Thời Trang Nam" : gioi_tinh === "0" ? "Thời Trang Nữ" : "Tất Cả Sản Phẩm"}
             </h1>
-            {total > 0 && <span className="text-sm text-neutral-500">{total} sản phẩm</span>}
+            {total > 0 && <span className="text-sm text-ink-soft">{total} sản phẩm</span>}
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -157,8 +157,8 @@ export default function Category() {
                 <button
                   key={p}
                   onClick={() => setPage(p)}
-                  className={`w-9 h-9  text-sm font-medium transition-colors ${
-                    page === p ? "bg-accent text-white" : "bg-ink-1 border hover:bg-ink text-neutral-300"
+                  className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+                    page === p ? "bg-ink text-white" : "bg-white border hover:bg-tile-warm text-ink-soft"
                   }`}
                 >
                   {p}

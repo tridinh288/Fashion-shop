@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowDown, ArrowUpRight, Truck, Headphones, ShieldCheck, RotateCcw } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { getProducts } from "../api/productApi";
 import { getHomeCovers } from "../api/homeApi";
 import { addToCart } from "../api/cartApi";
@@ -22,32 +22,23 @@ const TABS = [
   { key: "sale", label: "Khuyến mãi" },
 ];
 
-const SERVICES = [
-  { icon: Truck, title: "Miễn phí giao hàng", desc: "Đơn từ 500.000đ" },
-  { icon: RotateCcw, title: "Hoàn trả 7 ngày", desc: "Không cần lý do" },
-  { icon: ShieldCheck, title: "Hàng chính hãng", desc: "Cam kết chất lượng" },
-  { icon: Headphones, title: "Hỗ trợ 24/7", desc: "Tư vấn mọi lúc" },
-];
-
 const COLLECTIONS = [
   {
     to: "/category?gioi_tinh=1",
-    index: "01",
-    title: "Nam",
     gioiTinh: 1,
+    title: "Thời trang nam",
     desc: "Quần tây, jean, kaki, polo, sơ mi",
   },
   {
     to: "/category?gioi_tinh=0",
-    index: "02",
-    title: "Nữ",
     gioiTinh: 0,
+    title: "Thời trang nữ",
     desc: "Quần suông, kaki, short, áo",
   },
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 22 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -64,7 +55,6 @@ export default function Home() {
 
   const products = productsRes?.data?.data || [];
 
-  // Ảnh bìa do quản trị viên đặt; hỏng hoặc chưa đặt thì rơi về ảnh sản phẩm
   const { data: coverRes } = useQuery({
     queryKey: ["home-covers"],
     queryFn: getHomeCovers,
@@ -73,15 +63,14 @@ export default function Home() {
   });
   const adminCovers = coverRes?.data?.data ?? {};
 
-  // Dải ảnh chạy ngang cần đủ dài để nối vòng không thấy điểm nối
-  const marquee = products.filter((p) => p.hinh_anh).slice(0, 6);
-
-  // Ảnh nền cho hai thẻ bộ sưu tập, lấy từ chính hàng đang bán
   const withImg = products.filter((p) => p.hinh_anh);
+  const heroProduct = withImg[0] ?? null;
+  const marquee = withImg.slice(0, 6);
+
+  // Ảnh bìa: ưu tiên ảnh quản trị viên đặt, chưa có thì lấy hàng đang bán
   const covers = (() => {
     const nam = withImg.find((p) => p.gioi_tinh === 1)?.hinh_anh;
     const nu = withImg.find((p) => p.gioi_tinh === 0)?.hinh_anh;
-    // Tab đang xem có thể chỉ toàn hàng một giới; khi đó lấy ảnh khác để hai thẻ không trùng
     const spare = withImg.map((p) => p.hinh_anh).filter((h) => h !== nam && h !== nu);
 
     return {
@@ -90,8 +79,8 @@ export default function Home() {
     };
   })();
 
-  // Ảnh admin đặt là ảnh bìa cắt sẵn nên phủ kín khung; ảnh sản phẩm tách nền
-  // thì đặt gọn bên phải để không bị cắt cụt.
+  // Ảnh quản trị viên đặt là ảnh bìa cắt sẵn nên phủ kín khung; ảnh sản phẩm
+  // tách nền thì giữ nguyên tỉ lệ, tránh cắt cụt món đồ.
   const isAdminCover = (gioiTinh) =>
     Boolean(gioiTinh === 1 ? adminCovers.nam : adminCovers.nu);
 
@@ -113,96 +102,104 @@ export default function Home() {
   return (
     <div>
       {/* ==================== Hero ==================== */}
-      <section className="relative flex min-h-[80vh] items-center overflow-hidden border-b border-line">
-        {/* Nền vải chuyển động */}
-        <div className="absolute inset-0">
-          <FabricCanvas />
+      <section className="border-b border-line">
+        <div className="mx-auto grid max-w-[1400px] gap-0 px-5 lg:grid-cols-2 lg:px-8">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            transition={{ staggerChildren: 0.09 }}
+            className="flex flex-col justify-center py-16 lg:py-24 lg:pr-14"
+          >
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="eyebrow mb-5"
+            >
+              Bộ sưu tập 2026
+            </motion.p>
+
+            <motion.h1
+              variants={fadeUp}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-6 text-4xl font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3.4rem]"
+            >
+              Mặc đẹp mỗi ngày,
+              <br />
+              không cần cố gắng
+            </motion.h1>
+
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-9 max-w-md text-[15px] leading-relaxed text-ink-soft"
+            >
+              Quần áo nam và nữ được chọn theo phom dáng và chất vải. Giao nhanh
+              toàn quốc, đổi trả trong 7 ngày, thanh toán khi nhận hàng.
+            </motion.p>
+
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-wrap gap-3"
+            >
+              <Link
+                to="/category"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-ink px-7 py-3.5 text-[13px] font-semibold text-white transition-opacity duration-300 hover:opacity-85"
+              >
+                Mua sắm ngay
+                <ArrowRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </Link>
+              <Link
+                to="/category?gioi_tinh=1"
+                className="inline-flex items-center rounded-full border border-ink/15 px-7 py-3.5 text-[13px] font-semibold text-ink transition-colors duration-300 hover:border-ink hover:bg-tile"
+              >
+                Hàng nam
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          {/* Ảnh sản phẩm nổi bật đặt trên nền vải chuyển động */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="relative min-h-[340px] overflow-hidden lg:min-h-[560px]"
+          >
+            <div className="absolute inset-0">
+              <FabricCanvas />
+            </div>
+
+            {heroProduct && (
+              <Link
+                to={`/products/${heroProduct.id}`}
+                className="group relative flex h-full items-center justify-center p-10"
+              >
+                <img
+                  src={`${IMG_BASE}${heroProduct.hinh_anh}`}
+                  alt={heroProduct.ten_sp}
+                  className="max-h-[85%] w-auto object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.16)] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+                <span className="absolute bottom-7 left-7 rounded-full bg-paper/85 px-4 py-2 text-[12px] font-medium text-ink backdrop-blur-sm">
+                  {heroProduct.ten_sp}
+                </span>
+              </Link>
+            )}
+          </motion.div>
         </div>
-        {/* Lớp tối để chữ luôn tương phản đủ, bất kể shader sáng tới đâu */}
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/40 to-ink" />
-
-        <motion.div
-          initial="hidden"
-          animate="show"
-          transition={{ staggerChildren: 0.1, delayChildren: 0.1 }}
-          className="relative mx-auto w-full max-w-7xl px-6 py-24 lg:px-10"
-        >
-          <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="eyebrow mb-8"
-          >
-            Bộ sưu tập 2026
-          </motion.p>
-
-          <motion.h1
-            variants={fadeUp}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-10 max-w-5xl text-5xl leading-[0.98] sm:text-6xl md:text-7xl lg:text-[5.75rem]"
-          >
-            Chất liệu kể
-            <br />
-            <span className="italic text-accent">câu chuyện</span> của bạn
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-12 max-w-md text-sm leading-relaxed text-neutral-400 md:text-base"
-          >
-            Thời trang nam và nữ được tuyển chọn theo phom dáng và chất vải.
-            Giao nhanh toàn quốc, đổi trả trong 7 ngày.
-          </motion.p>
-
-          <motion.div
-            variants={fadeUp}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-wrap items-center gap-4"
-          >
-            <Link
-              to="/category"
-              className="group inline-flex items-center gap-3 bg-neutral-50 px-8 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-accent hover:text-white"
-            >
-              Xem bộ sưu tập
-              <ArrowRight
-                size={15}
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </Link>
-            <Link
-              to="/category?gioi_tinh=1"
-              className="hover-line inline-flex items-center border border-line-strong px-8 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-neutral-300 transition-colors duration-300 hover:text-white"
-            >
-              Hàng nam
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        {/* Gợi ý cuộn xuống */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ArrowDown size={18} className="text-neutral-600" />
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* ==================== Dải ảnh chạy ngang ==================== */}
       {marquee.length > 0 && (
-        <section className="overflow-hidden border-b border-line py-6">
-          <div className="marquee-track gap-6">
+        <section className="overflow-hidden border-b border-line bg-tile-warm py-5">
+          <div className="marquee-track gap-5">
             {[...marquee, ...marquee].map((p, i) => (
               <Link
                 key={`${p.id}-${i}`}
                 to={`/products/${p.id}`}
-                className="group relative h-40 w-32 shrink-0 overflow-hidden bg-ink-1 md:h-52 md:w-40"
+                className="group h-28 w-24 shrink-0 overflow-hidden bg-paper md:h-36 md:w-28"
                 aria-hidden={i >= marquee.length}
                 tabIndex={i >= marquee.length ? -1 : 0}
               >
@@ -210,7 +207,7 @@ export default function Home() {
                   src={`${IMG_BASE}${p.hinh_anh}`}
                   alt={p.ten_sp}
                   loading="lazy"
-                  className="h-full w-full object-cover opacity-60 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
+                  className="h-full w-full object-contain p-2.5 transition-transform duration-500 group-hover:scale-105"
                 />
               </Link>
             ))}
@@ -218,40 +215,19 @@ export default function Home() {
         </section>
       )}
 
-      {/* ==================== Cam kết ==================== */}
-      <section className="border-b border-line">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map(({ icon: Icon, title, desc }, i) => (
-            <Reveal
-              key={title}
-              delay={i * 0.07}
-              className={`border-line px-6 py-8 lg:px-10 ${
-                i % 2 === 1 ? "" : "border-r"
-              } ${i < 2 ? "border-b lg:border-b-0" : ""} ${
-                i === 1 ? "lg:border-r" : ""
-              } ${i === 2 ? "border-r" : ""}`}
-            >
-              <Icon size={20} className="mb-5 text-accent" strokeWidth={1.5} />
-              <p className="mb-1.5 text-sm font-medium text-neutral-100">{title}</p>
-              <p className="text-xs text-neutral-500">{desc}</p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
       {/* ==================== Bộ sưu tập ==================== */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
-        <Reveal className="mb-10">
-          <p className="eyebrow mb-5">Bộ sưu tập</p>
-          <h2 className="text-4xl md:text-5xl">Chọn theo phong cách</h2>
+      <section className="mx-auto max-w-[1400px] px-5 py-16 lg:px-8">
+        <Reveal className="mb-8">
+          <p className="eyebrow mb-3">Danh mục</p>
+          <h2 className="text-2xl font-semibold text-ink sm:text-3xl">Mua theo phong cách</h2>
         </Reveal>
 
-        <div className="grid gap-px bg-line md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {COLLECTIONS.map((c, i) => (
-            <Reveal key={c.to} delay={i * 0.12}>
+            <Reveal key={c.to} delay={i * 0.1}>
               <Link
                 to={c.to}
-                className="group relative flex h-80 flex-col justify-between overflow-hidden bg-ink-1 p-10"
+                className="group relative flex h-64 items-center overflow-hidden bg-tile sm:h-72"
               >
                 {covers[c.gioiTinh] && (
                   <img
@@ -260,27 +236,43 @@ export default function Home() {
                     aria-hidden="true"
                     className={
                       isAdminCover(c.gioiTinh)
-                        ? "absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-80"
-                        : "absolute bottom-0 right-0 h-[115%] w-1/2 object-contain object-bottom opacity-70 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-90"
+                        ? "absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        : "absolute right-4 top-1/2 h-[92%] w-1/2 -translate-y-1/2 object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                     }
                   />
                 )}
-                {/* Chuyển sắc từ trái sang giữ vùng chữ luôn đủ tương phản */}
-                <div className="absolute inset-0 bg-gradient-to-r from-ink-1 via-ink-1/85 to-transparent" />
 
-                <div className="relative flex items-start justify-between">
-                  <span className="eyebrow">{c.index}</span>
-                  <ArrowUpRight
-                    size={24}
-                    strokeWidth={1.2}
-                    className="text-neutral-700 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-accent"
-                  />
-                </div>
-                <div className="relative">
-                  <h3 className="mb-3 text-5xl transition-colors duration-300 group-hover:text-accent">
+                {/* Chỉ cần lớp phủ khi nền là ảnh bìa phủ kín khung */}
+                {isAdminCover(c.gioiTinh) && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+                )}
+
+                <div className="relative z-10 max-w-[55%] p-8 sm:p-10">
+                  <h3
+                    className={`mb-2 text-2xl font-semibold sm:text-[28px] ${
+                      isAdminCover(c.gioiTinh) ? "text-white" : "text-ink"
+                    }`}
+                  >
                     {c.title}
                   </h3>
-                  <p className="text-sm text-neutral-500">{c.desc}</p>
+                  <p
+                    className={`mb-5 text-[13px] ${
+                      isAdminCover(c.gioiTinh) ? "text-white/80" : "text-ink-soft"
+                    }`}
+                  >
+                    {c.desc}
+                  </p>
+                  <span
+                    className={`inline-flex items-center gap-1.5 text-[12.5px] font-semibold ${
+                      isAdminCover(c.gioiTinh) ? "text-white" : "text-ink"
+                    }`}
+                  >
+                    Xem tất cả
+                    <ArrowUpRight
+                      size={15}
+                      className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    />
+                  </span>
                 </div>
               </Link>
             </Reveal>
@@ -289,22 +281,20 @@ export default function Home() {
       </section>
 
       {/* ==================== Sản phẩm ==================== */}
-      <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
-        <Reveal className="mb-12 flex flex-col gap-6 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mx-auto max-w-[1400px] px-5 pb-8 lg:px-8">
+        <Reveal className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="eyebrow mb-5">Sản phẩm</p>
-            <h2 className="text-4xl md:text-5xl">Đang được chú ý</h2>
+            <p className="eyebrow mb-3">Sản phẩm</p>
+            <h2 className="text-2xl font-semibold text-ink sm:text-3xl">Đang được chú ý</h2>
           </div>
 
-          <div className="flex gap-8">
+          <div className="flex gap-1 self-start rounded-full bg-tile p-1 sm:self-auto">
             {TABS.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className={`link-underline pb-1 text-xs font-semibold uppercase tracking-[0.14em] transition-colors duration-300 ${
-                  tab === t.key
-                    ? "text-accent"
-                    : "text-neutral-500 hover:text-neutral-200"
+                className={`rounded-full px-5 py-2 text-[12.5px] font-semibold transition-all duration-300 ${
+                  tab === t.key ? "bg-paper text-ink shadow-sm" : "text-ink-soft hover:text-ink"
                 }`}
               >
                 {t.label}
@@ -316,11 +306,9 @@ export default function Home() {
         {isLoading ? (
           <LoadingSpinner />
         ) : products.length === 0 ? (
-          <p className="py-24 text-center text-sm text-neutral-600">
-            Không có sản phẩm nào
-          </p>
+          <p className="py-24 text-center text-sm text-ink-faint">Không có sản phẩm nào</p>
         ) : (
-          <div className="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-9 lg:grid-cols-4 lg:gap-x-5">
             {products.map((p, i) => (
               <Reveal key={p.id} delay={Math.min(i, 7) * 0.05}>
                 <ProductCard product={p} onAddToCart={handleAddToCart} />
@@ -328,6 +316,19 @@ export default function Home() {
             ))}
           </div>
         )}
+
+        <div className="mt-12 flex justify-center">
+          <Link
+            to="/category"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-ink/15 px-8 py-3.5 text-[13px] font-semibold text-ink transition-colors duration-300 hover:border-ink hover:bg-tile"
+          >
+            Xem tất cả sản phẩm
+            <ArrowRight
+              size={16}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </Link>
+        </div>
       </section>
     </div>
   );

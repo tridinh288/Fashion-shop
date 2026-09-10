@@ -72,11 +72,11 @@ void main() {
   float vignette = smoothstep(1.15, 0.25, length(uv - vec2(0.5)));
   light *= vignette;
 
-  vec3 base   = vec3(0.039, 0.039, 0.039);   // #0a0a0a
-  vec3 accent = vec3(0.976, 0.451, 0.086);   // #f97316
+  // Nền sáng: vải trắng ngà, nếp gấp hiện ra bằng sắc xám ấm rất nhạt
+  vec3 base = vec3(0.980, 0.978, 0.973);   // #fafaf8
+  vec3 fold = vec3(0.886, 0.878, 0.867);   // #e2e0dd
 
-  vec3 col = base + accent * light * 0.30;
-  col += vec3(0.05, 0.06, 0.08) * light * 0.6;   // chút ánh lạnh cho vải có sheen
+  vec3 col = mix(base, fold, light * 0.85);
 
   gl_FragColor = vec4(col, 1.0);
 }

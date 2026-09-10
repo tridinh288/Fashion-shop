@@ -53,35 +53,35 @@ export default function Register() {
 
   const field = (name, label, type = "text", placeholder = "") => (
     <div>
-      <label className="block text-sm font-medium text-neutral-300 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-ink-soft mb-1">{label}</label>
       <input
       {...register(name)}
       name={name}
       type={type}
       autoComplete="off"
       placeholder={placeholder}
-      className="w-full border border-line px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40"
+      className="w-full border border-line rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
     />
       {errors[name] && <p className="text-red-500 text-xs mt-1">{errors[name].message}</p>}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-ink flex items-center justify-center px-4 py-8">
-      <div className="bg-ink-1 border p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-neutral-100 mb-1">Đăng Ký</h1>
-        <p className="text-sm text-neutral-500 mb-6">Tạo tài khoản FashionShop mới</p>
+    <div className="min-h-screen bg-tile-warm flex items-center justify-center px-4 py-8">
+      <div className="bg-white rounded-2xl shadow-sm border p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-ink mb-1">Đăng Ký</h1>
+        <p className="text-sm text-ink-soft mb-6">Tạo tài khoản FashionShop mới</p>
 
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {field("fullname", "Họ và Tên", "text", "Nguyễn Văn A")}
-          {field("email", "Email", "email", "email@example.com")}
-          {field("phone", "Số Điện Thoại", "tel", "0901234567")}
+          {field("email", "Email", "text", "email@example.com")}
+          {field("phone", "Số Điện Thoại", "text", "0901234567")}
 
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1">Giới Tính</label>
+            <label className="block text-sm font-medium text-ink-soft mb-1">Giới Tính</label>
             <select
               {...register("gender")}
-              className="w-full border border-line px-3 py-2.5 text-sm outline-none focus:border-accent"
+              className="w-full border border-line rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink"
             >
               <option value="Nam">Nam</option>
               <option value="Nữ">Nữ</option>
@@ -94,15 +94,15 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent hover:bg-accent-hover disabled:bg-accent/40 text-white font-semibold py-2.5 transition-colors"
+            className="w-full bg-ink hover:bg-black disabled:bg-ink/40 text-white font-semibold py-2.5 rounded-lg transition-colors"
           >
             {loading ? "Đang đăng ký..." : "Đăng Ký"}
           </button>
         </form>
 
-        <p className="text-sm text-center text-neutral-500 mt-6">
+        <p className="text-sm text-center text-ink-soft mt-6">
           Đã có tài khoản?{" "}
-          <Link to="/login" className="text-accent font-medium hover:underline">
+          <Link to="/login" className="text-ink font-medium hover:underline">
             Đăng nhập
           </Link>
         </p>

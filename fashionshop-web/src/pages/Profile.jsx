@@ -72,46 +72,46 @@ export default function Profile() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-neutral-100">Hồ Sơ Cá Nhân</h1>
+      <h1 className="text-2xl font-bold text-ink">Hồ Sơ Cá Nhân</h1>
 
       {/* Profile */}
-      <div className="bg-ink-1 border p-6">
-        <h2 className="font-semibold text-neutral-300 mb-4">Thông Tin Cá Nhân</h2>
+      <div className="bg-white border rounded-xl p-6">
+        <h2 className="font-semibold text-ink-soft mb-4">Thông Tin Cá Nhân</h2>
         <form onSubmit={handleSubmit(onProfile)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1">Họ và Tên</label>
+            <label className="block text-sm font-medium text-ink-soft mb-1">Họ và Tên</label>
             <input
               defaultValue={user?.fullname}
               disabled
-              className="w-full border bg-ink px-3 py-2.5 text-sm text-neutral-500 cursor-not-allowed"
+              className="w-full border bg-tile-warm rounded-lg px-3 py-2.5 text-sm text-ink-soft cursor-not-allowed"
             />
-            <p className="text-xs text-neutral-600 mt-1">Liên hệ hỗ trợ để thay đổi họ tên</p>
+            <p className="text-xs text-ink-faint mt-1">Liên hệ hỗ trợ để thay đổi họ tên</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1">Email</label>
+            <label className="block text-sm font-medium text-ink-soft mb-1">Email</label>
             <input
               {...register("email")}
               type="email"
-              className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40"
+              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1">Số Điện Thoại</label>
+            <label className="block text-sm font-medium text-ink-soft mb-1">Số Điện Thoại</label>
             <input
               {...register("phone")}
-              className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40"
+              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
             />
             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1">Giới Tính</label>
+            <label className="block text-sm font-medium text-ink-soft mb-1">Giới Tính</label>
             <select
               {...register("gender")}
-              className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent"
+              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink"
             >
               <option value="Nam">Nam</option>
               <option value="Nữ">Nữ</option>
@@ -121,7 +121,7 @@ export default function Profile() {
           <button
             type="submit"
             disabled={saving}
-            className="bg-accent hover:bg-accent-hover disabled:bg-accent/40 text-white font-semibold px-6 py-2.5 transition-colors"
+            className="bg-ink hover:bg-black disabled:bg-ink/40 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
           >
             {saving ? "Đang lưu..." : "Lưu Thay Đổi"}
           </button>
@@ -129,8 +129,8 @@ export default function Profile() {
       </div>
 
       {/* Password */}
-      <div className="bg-ink-1 border p-6">
-        <h2 className="font-semibold text-neutral-300 mb-4">Đổi Mật Khẩu</h2>
+      <div className="bg-white border rounded-xl p-6">
+        <h2 className="font-semibold text-ink-soft mb-4">Đổi Mật Khẩu</h2>
         <form onSubmit={submitPw(onPassword)} className="space-y-4">
           {[
             { name: "old_password", label: "Mật Khẩu Hiện Tại" },
@@ -138,12 +138,12 @@ export default function Profile() {
             { name: "new_password_confirmation", label: "Xác Nhận Mật Khẩu Mới" },
           ].map(({ name, label }) => (
             <div key={name}>
-              <label className="block text-sm font-medium text-neutral-300 mb-1">{label}</label>
+              <label className="block text-sm font-medium text-ink-soft mb-1">{label}</label>
               <input
                 {...regPw(name)}
                 type="password"
                 placeholder="••••••••"
-                className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40"
+                className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
               />
               {pwErrors[name] && <p className="text-red-500 text-xs mt-1">{pwErrors[name].message}</p>}
             </div>
@@ -151,7 +151,7 @@ export default function Profile() {
           <button
             type="submit"
             disabled={pwSaving}
-            className="bg-line hover:bg-ink-1 disabled:bg-neutral-700 text-white font-semibold px-6 py-2.5 transition-colors"
+            className="bg-ink hover:bg-black disabled:bg-ink/40 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
           >
             {pwSaving ? "Đang đổi..." : "Đổi Mật Khẩu"}
           </button>

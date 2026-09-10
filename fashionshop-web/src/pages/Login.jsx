@@ -62,23 +62,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-ink flex items-center justify-center px-4">
-      <div className="bg-ink-1 border p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-neutral-100 mb-1">
+    <div className="min-h-screen bg-tile-warm flex items-center justify-center px-4">
+      <div className="bg-white rounded-2xl shadow-sm border p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-ink mb-1">
           Đăng Nhập
         </h1>
 
-        <p className="text-sm text-neutral-500 mb-6">
+        <p className="text-sm text-ink-soft mb-6">
           Chào mừng bạn trở lại FashionShop
         </p>
 
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input
             {...register("email")}
-            type="email"
-            autoComplete="email"
+            type="text"
             placeholder="email@example.com"
-            className="w-full border px-3 py-2.5"
+            className="w-full border px-3 py-2.5 rounded-lg"
           />
           {errors.email && (
             <p className="text-red-500 text-xs">
@@ -90,7 +89,7 @@ export default function Login() {
             {...register("password")}
             type="password"
             placeholder="••••••••"
-            className="w-full border px-3 py-2.5"
+            className="w-full border px-3 py-2.5 rounded-lg"
           />
           {errors.password && (
             <p className="text-red-500 text-xs">
@@ -108,15 +107,15 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-accent text-white py-2.5"
+            className="w-full bg-ink text-white py-2.5 rounded-lg"
           >
             {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
           </button>
         </form>
 
-        <p className="text-sm text-center text-neutral-500 mt-6">
+        <p className="text-sm text-center text-ink-soft mt-6">
           Chưa có tài khoản?{" "}
-          <Link to="/register" className="text-accent">
+          <Link to="/register" className="text-ink">
             Đăng ký ngay
           </Link>
         </p>
