@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowDown, ArrowUpRight, Truck, Headphones, ShieldCheck, RotateCcw } from "lucide-react";
 import { getProducts } from "../api/productApi";
+import { getHomeCovers } from "../api/homeApi";
 import { addToCart } from "../api/cartApi";
 import useAuthStore from "../stores/authStore";
 import useCartStore from "../stores/cartStore";
@@ -63,6 +64,15 @@ export default function Home() {
 
   const products = productsRes?.data?.data || [];
 
+  // Ảnh bìa do quản trị viên đặt; hỏng hoặc chưa đặt thì rơi về ảnh sản phẩm
+  const { data: coverRes } = useQuery({
+    queryKey: ["home-covers"],
+    queryFn: getHomeCovers,
+    staleTime: 1000 * 60 * 5,
+    retry: false,
+  });
+  const adminCovers = coverRes?.data?.data ?? {};
+
   // Dải ảnh chạy ngang cần đủ dài để nối vòng không thấy điểm nối
   const marquee = products.filter((p) => p.hinh_anh).slice(0, 6);
 
@@ -73,8 +83,17 @@ export default function Home() {
     const nu = withImg.find((p) => p.gioi_tinh === 0)?.hinh_anh;
     // Tab đang xem có thể chỉ toàn hàng một giới; khi đó lấy ảnh khác để hai thẻ không trùng
     const spare = withImg.map((p) => p.hinh_anh).filter((h) => h !== nam && h !== nu);
-    return { 1: nam ?? spare[0] ?? null, 0: nu ?? spare[0] ?? spare[1] ?? null };
+
+    return {
+      1: adminCovers.nam ?? nam ?? spare[0] ?? null,
+      0: adminCovers.nu ?? nu ?? spare[0] ?? spare[1] ?? null,
+    };
   })();
+
+  // Ảnh admin đặt là ảnh bìa cắt sẵn nên phủ kín khung; ảnh sản phẩm tách nền
+  // thì đặt gọn bên phải để không bị cắt cụt.
+  const isAdminCover = (gioiTinh) =>
+    Boolean(gioiTinh === 1 ? adminCovers.nam : adminCovers.nu);
 
   const handleAddToCart = async (product) => {
     if (!token) {
@@ -239,7 +258,11 @@ export default function Home() {
                     src={`${IMG_BASE}${covers[c.gioiTinh]}`}
                     alt=""
                     aria-hidden="true"
-                    className="absolute bottom-0 right-0 h-[115%] w-1/2 object-contain object-bottom opacity-70 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-90"
+                    className={
+                      isAdminCover(c.gioiTinh)
+                        ? "absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-80"
+                        : "absolute bottom-0 right-0 h-[115%] w-1/2 object-contain object-bottom opacity-70 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-90"
+                    }
                   />
                 )}
                 {/* Chuyển sắc từ trái sang giữ vùng chữ luôn đủ tương phản */}

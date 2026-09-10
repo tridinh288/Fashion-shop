@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Package, ShoppingBag, Users,
-  Star, MessageSquare, LogOut,
+  Star, MessageSquare, LogOut, Image,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuthStore from "../../stores/authStore";
@@ -14,6 +14,7 @@ const NAV = [
   { to: "/users",    label: "Người Dùng",  icon: Users           },
   { to: "/reviews",  label: "Đánh Giá",   icon: Star            },
   { to: "/contacts", label: "Liên Hệ",    icon: MessageSquare   },
+  { to: "/covers",   label: "Ảnh Trang Chủ", icon: Image        },
 ];
 
 export default function Sidebar() {

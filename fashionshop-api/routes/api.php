@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CartController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\UserAddressController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\HomeCoverController;
 use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\Admin\ReviewController as AdminReviewController;
@@ -77,6 +79,9 @@ Route::prefix('v1')->group(function () use ($products, $productById, $orders) {
 
 // ==================== ADMIN ROUTES ====================
     // Admin login (public)
+    // Ảnh bìa bộ sưu tập ngoài trang chủ (công khai)
+    Route::get('/home-covers', [HomeController::class, 'covers']);
+
     Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
     Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () use ($products, $productById, $orders) {
@@ -92,6 +97,11 @@ Route::prefix('v1')->group(function () use ($products, $productById, $orders) {
         Route::post($products, [AdminProductController::class, 'store']);
         Route::post($productById, [AdminProductController::class, 'update']);
         Route::delete($productById, [AdminProductController::class, 'destroy']);
+
+        // Ảnh bìa trang chủ
+        Route::get('/home-covers', [HomeCoverController::class, 'show']);
+        Route::post('/home-covers', [HomeCoverController::class, 'update']);
+        Route::delete('/home-covers/{gioiTinh}', [HomeCoverController::class, 'destroy']);
 
         // Orders
         Route::get($orders, [AdminOrderController::class, 'index']);

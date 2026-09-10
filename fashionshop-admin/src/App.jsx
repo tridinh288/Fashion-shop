@@ -13,6 +13,7 @@ import OrderDetail from "./pages/OrderDetail";
 import Users      from "./pages/Users";
 import Reviews    from "./pages/Reviews";
 import Contacts   from "./pages/Contacts";
+import HomeCovers from "./pages/HomeCovers";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 1000 * 30 } },
@@ -38,6 +39,7 @@ function AdminRoutes() {
         <Route path="/users"      element={<Users />}      />
         <Route path="/reviews"    element={<Reviews />}    />
         <Route path="/contacts"   element={<Contacts />}   />
+        <Route path="/covers"     element={<HomeCovers />} />
         <Route path="*"           element={<Navigate to="/" replace />} />
       </Routes>
     </AdminLayout>
