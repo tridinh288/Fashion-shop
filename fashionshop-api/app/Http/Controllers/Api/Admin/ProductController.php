@@ -41,7 +41,7 @@ class ProductController extends Controller
             'so_luong'    => 'required|integer|min:0',
             'gioi_tinh'   => 'required|in:0,1',
             'category_id' => 'nullable|exists:categories,id',
-            'hinh_anh'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'hinh_anh'    => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
         $hinh_anh = null;
@@ -77,7 +77,7 @@ class ProductController extends Controller
             'so_luong'    => 'required|integer|min:0',
             'gioi_tinh'   => 'required|in:0,1',
             'category_id' => 'nullable|exists:categories,id',
-            'hinh_anh'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'hinh_anh'    => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
         if ($request->hasFile('hinh_anh')) {

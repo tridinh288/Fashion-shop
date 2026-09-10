@@ -6,6 +6,10 @@ RUN apk add --no-cache git zip unzip curl ca-certificates \
     && curl -sS https://getcomposer.org/installer \
        | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Image PHP chính thức mặc định chỉ cho upload 2M và POST 8M, quá thấp cho
+# ảnh sản phẩm chụp bằng máy ảnh. Nới lên mức thoải mái nhưng vẫn có trần.
+RUN { echo "upload_max_filesize=64M"; echo "post_max_size=72M"; echo "memory_limit=256M"; } > /usr/local/etc/php/conf.d/uploads.ini
+
 WORKDIR /var/www
 
 COPY . .
