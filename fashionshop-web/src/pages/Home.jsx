@@ -33,12 +33,14 @@ const COLLECTIONS = [
     to: "/category?gioi_tinh=1",
     index: "01",
     title: "Nam",
+    gioiTinh: 1,
     desc: "Quần tây, jean, kaki, polo, sơ mi",
   },
   {
     to: "/category?gioi_tinh=0",
     index: "02",
     title: "Nữ",
+    gioiTinh: 0,
     desc: "Quần suông, kaki, short, áo",
   },
 ];
@@ -64,6 +66,16 @@ export default function Home() {
   // Dải ảnh chạy ngang cần đủ dài để nối vòng không thấy điểm nối
   const marquee = products.filter((p) => p.hinh_anh).slice(0, 6);
 
+  // Ảnh nền cho hai thẻ bộ sưu tập, lấy từ chính hàng đang bán
+  const withImg = products.filter((p) => p.hinh_anh);
+  const covers = (() => {
+    const nam = withImg.find((p) => p.gioi_tinh === 1)?.hinh_anh;
+    const nu = withImg.find((p) => p.gioi_tinh === 0)?.hinh_anh;
+    // Tab đang xem có thể chỉ toàn hàng một giới; khi đó lấy ảnh khác để hai thẻ không trùng
+    const spare = withImg.map((p) => p.hinh_anh).filter((h) => h !== nam && h !== nu);
+    return { 1: nam ?? spare[0] ?? null, 0: nu ?? spare[0] ?? spare[1] ?? null };
+  })();
+
   const handleAddToCart = async (product) => {
     if (!token) {
       toast.error("Vui lòng đăng nhập để thêm vào giỏ");
@@ -82,7 +94,7 @@ export default function Home() {
   return (
     <div>
       {/* ==================== Hero ==================== */}
-      <section className="relative flex min-h-[88vh] items-center overflow-hidden border-b border-line">
+      <section className="relative flex min-h-[80vh] items-center overflow-hidden border-b border-line">
         {/* Nền vải chuyển động */}
         <div className="absolute inset-0">
           <FabricCanvas />
@@ -94,7 +106,7 @@ export default function Home() {
           initial="hidden"
           animate="show"
           transition={{ staggerChildren: 0.1, delayChildren: 0.1 }}
-          className="relative mx-auto w-full max-w-7xl px-6 py-28 lg:px-10"
+          className="relative mx-auto w-full max-w-7xl px-6 py-24 lg:px-10"
         >
           <motion.p
             variants={fadeUp}
@@ -194,7 +206,7 @@ export default function Home() {
             <Reveal
               key={title}
               delay={i * 0.07}
-              className={`border-line px-6 py-10 lg:px-10 ${
+              className={`border-line px-6 py-8 lg:px-10 ${
                 i % 2 === 1 ? "" : "border-r"
               } ${i < 2 ? "border-b lg:border-b-0" : ""} ${
                 i === 1 ? "lg:border-r" : ""
@@ -209,8 +221,8 @@ export default function Home() {
       </section>
 
       {/* ==================== Bộ sưu tập ==================== */}
-      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-10">
-        <Reveal className="mb-14">
+      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+        <Reveal className="mb-10">
           <p className="eyebrow mb-5">Bộ sưu tập</p>
           <h2 className="text-4xl md:text-5xl">Chọn theo phong cách</h2>
         </Reveal>
@@ -220,9 +232,20 @@ export default function Home() {
             <Reveal key={c.to} delay={i * 0.12}>
               <Link
                 to={c.to}
-                className="group relative flex h-72 flex-col justify-between bg-ink p-10 transition-colors duration-300 hover:bg-ink-1"
+                className="group relative flex h-80 flex-col justify-between overflow-hidden bg-ink-1 p-10"
               >
-                <div className="flex items-start justify-between">
+                {covers[c.gioiTinh] && (
+                  <img
+                    src={`${IMG_BASE}${covers[c.gioiTinh]}`}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute bottom-0 right-0 h-[115%] w-1/2 object-contain object-bottom opacity-70 transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-90"
+                  />
+                )}
+                {/* Chuyển sắc từ trái sang giữ vùng chữ luôn đủ tương phản */}
+                <div className="absolute inset-0 bg-gradient-to-r from-ink-1 via-ink-1/85 to-transparent" />
+
+                <div className="relative flex items-start justify-between">
                   <span className="eyebrow">{c.index}</span>
                   <ArrowUpRight
                     size={24}
@@ -230,7 +253,7 @@ export default function Home() {
                     className="text-neutral-700 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-accent"
                   />
                 </div>
-                <div>
+                <div className="relative">
                   <h3 className="mb-3 text-5xl transition-colors duration-300 group-hover:text-accent">
                     {c.title}
                   </h3>
@@ -243,7 +266,7 @@ export default function Home() {
       </section>
 
       {/* ==================== Sản phẩm ==================== */}
-      <section className="mx-auto max-w-7xl px-6 pb-28 lg:px-10">
+      <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
         <Reveal className="mb-12 flex flex-col gap-6 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="eyebrow mb-5">Sản phẩm</p>
