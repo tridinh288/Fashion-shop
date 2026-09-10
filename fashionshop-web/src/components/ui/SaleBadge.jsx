@@ -3,7 +3,7 @@ export default function SaleBadge({ price, originalPrice }) {
   const pct = Math.round(((originalPrice - price) / originalPrice) * 100);
 
   return (
-    <span className="rounded-full border border-accent/30 bg-accent/15 px-2 py-0.5 text-[11px] font-semibold tracking-tight text-accent backdrop-blur-sm">
+    <span className="bg-accent px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-white">
       −{pct}%
     </span>
   );

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { ShoppingBag } from "lucide-react";
 import { formatCurrency } from "../../utils/formatCurrency";
 import SaleBadge from "./SaleBadge";
 import StarRating from "./StarRating";
@@ -9,7 +8,7 @@ const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/sto
 export default function ProductCard({ product, onAddToCart }) {
   const imgSrc = product.hinh_anh
     ? `${IMG_BASE}${product.hinh_anh}`
-    : "https://placehold.co/600x760/18181b/52525b?text=No+Image";
+    : "https://placehold.co/600x760/121212/404040?text=No+Image";
 
   const reviews = product.reviews || [];
   const avgRating = reviews.length
@@ -19,30 +18,38 @@ export default function ProductCard({ product, onAddToCart }) {
   const hasDiscount = product.gia_cu > product.gia;
 
   return (
-    <article className="group glow-border flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
+    <article className="group flex flex-col">
       <Link
         to={`/products/${product.id}`}
-        className="relative block aspect-[4/5] overflow-hidden bg-zinc-800/40"
+        className="relative block aspect-[3/4] overflow-hidden bg-ink-1"
       >
         <img
           src={imgSrc}
           alt={product.ten_sp}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
 
-        {/* Lớp phủ tối dần ở đáy ảnh để chữ bên dưới không bị chói */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
         {hasDiscount && (
-          <div className="absolute left-3 top-3">
+          <div className="absolute left-0 top-0">
             <SaleBadge price={product.gia} originalPrice={product.gia_cu} />
           </div>
         )}
+
+        {/* Nút thêm giỏ trượt lên từ đáy ảnh khi rê chuột */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            onAddToCart?.(product);
+          }}
+          className="absolute inset-x-0 bottom-0 translate-y-full bg-neutral-50 py-3.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink opacity-0 transition-all duration-300 hover:bg-accent hover:text-white group-hover:translate-y-0 group-hover:opacity-100 focus-visible:translate-y-0 focus-visible:opacity-100"
+        >
+          Thêm vào giỏ
+        </button>
       </Link>
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="line-clamp-2 text-sm font-medium leading-snug text-zinc-100">
+      <div className="flex flex-1 flex-col gap-2 pt-4">
+        <h3 className="text-sm font-medium leading-snug text-neutral-200">
           <Link
             to={`/products/${product.id}`}
             className="transition-colors duration-300 hover:text-accent"
@@ -51,26 +58,18 @@ export default function ProductCard({ product, onAddToCart }) {
           </Link>
         </h3>
 
-        {avgRating > 0 && <StarRating rating={avgRating} size={12} />}
+        {avgRating > 0 && <StarRating rating={avgRating} size={11} />}
 
-        <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <span className="text-[15px] font-semibold tabular-nums text-white">
+        <div className="mt-auto flex items-baseline gap-3 pt-1">
+          <span className="text-sm font-semibold tabular-nums text-white">
             {formatCurrency(product.gia)}
           </span>
           {hasDiscount && (
-            <span className="text-xs tabular-nums text-zinc-500 line-through">
+            <span className="text-xs tabular-nums text-neutral-600 line-through">
               {formatCurrency(product.gia_cu)}
             </span>
           )}
         </div>
-
-        <button
-          onClick={() => onAddToCart?.(product)}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-800/70 py-2.5 text-xs font-semibold text-zinc-200 transition-all duration-300 hover:border-accent/50 hover:bg-accent hover:text-white"
-        >
-          <ShoppingBag size={14} strokeWidth={2.2} />
-          Thêm vào giỏ
-        </button>
       </div>
     </article>
   );

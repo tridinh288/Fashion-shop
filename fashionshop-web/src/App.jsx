@@ -36,7 +36,7 @@ function CartInitializer() {
 
 function Layout({ children }) {
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-950">
+    <div className="flex min-h-screen flex-col bg-ink">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
@@ -51,10 +51,10 @@ export default function App() {
         <Toaster position="top-right" toastOptions={{
             duration: 3000,
             style: {
-              background: "#18181b",
-              color: "#e4e4e7",
-              border: "1px solid #27272a",
-              borderRadius: "12px",
+              background: "#121212",
+              color: "#d4d4d4",
+              border: "1px solid #232323",
+              borderRadius: "0px",
               fontSize: "14px",
             },
           }} />

@@ -7,10 +7,11 @@ export default function StarRating({ rating, max = 5, size = 16 }) {
         <Star
           key={i}
           size={size}
+          strokeWidth={1.5}
           className={
             i < Math.round(rating)
               ? "fill-accent text-accent"
-              : "text-zinc-700"
+              : "text-neutral-700"
           }
         />
       ))}

@@ -2,47 +2,49 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ShieldCheck, Truck, RotateCcw, Headphones, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowDown, ArrowUpRight, Truck, Headphones, ShieldCheck, RotateCcw } from "lucide-react";
 import { getProducts } from "../api/productApi";
 import { addToCart } from "../api/cartApi";
 import useAuthStore from "../stores/authStore";
 import useCartStore from "../stores/cartStore";
 import ProductCard from "../components/ui/ProductCard";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import FabricCanvas from "../components/ui/FabricCanvas";
 import Reveal from "../components/ui/Reveal";
 import toast from "react-hot-toast";
 
+const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+
 const TABS = [
-  { key: "featured", label: "Nổi Bật" },
-  { key: "bestseller", label: "Bán Chạy" },
-  { key: "sale", label: "Khuyến Mãi" },
+  { key: "featured", label: "Nổi bật" },
+  { key: "bestseller", label: "Bán chạy" },
+  { key: "sale", label: "Khuyến mãi" },
 ];
 
 const SERVICES = [
   { icon: Truck, title: "Miễn phí giao hàng", desc: "Đơn từ 500.000đ" },
+  { icon: RotateCcw, title: "Hoàn trả 7 ngày", desc: "Không cần lý do" },
+  { icon: ShieldCheck, title: "Hàng chính hãng", desc: "Cam kết chất lượng" },
   { icon: Headphones, title: "Hỗ trợ 24/7", desc: "Tư vấn mọi lúc" },
-  { icon: ShieldCheck, title: "Bảo hành chính hãng", desc: "Cam kết chất lượng" },
-  { icon: RotateCcw, title: "Hoàn trả dễ dàng", desc: "Trong vòng 7 ngày" },
 ];
 
 const COLLECTIONS = [
   {
     to: "/category?gioi_tinh=1",
-    title: "Thời Trang Nam",
-    desc: "Quần tây, jean, polo, sơ mi",
-    count: "4 danh mục",
+    index: "01",
+    title: "Nam",
+    desc: "Quần tây, jean, kaki, polo, sơ mi",
   },
   {
     to: "/category?gioi_tinh=0",
-    title: "Thời Trang Nữ",
+    index: "02",
+    title: "Nữ",
     desc: "Quần suông, kaki, short, áo",
-    count: "4 danh mục",
   },
 ];
 
-// Hiệu ứng vào của khối hero: các phần tử nối tiếp nhau
-const heroItem = {
-  hidden: { opacity: 0, y: 24 },
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -58,6 +60,9 @@ export default function Home() {
   });
 
   const products = productsRes?.data?.data || [];
+
+  // Dải ảnh chạy ngang cần đủ dài để nối vòng không thấy điểm nối
+  const marquee = products.filter((p) => p.hinh_anh).slice(0, 6);
 
   const handleAddToCart = async (product) => {
     if (!token) {
@@ -76,145 +81,184 @@ export default function Home() {
 
   return (
     <div>
-      {/* ---------------- Hero ---------------- */}
-      <section className="relative overflow-hidden border-b border-zinc-900">
-        <div className="hero-glow" />
-        <div className="absolute inset-0 grid-pattern" />
+      {/* ==================== Hero ==================== */}
+      <section className="relative flex min-h-[88vh] items-center overflow-hidden border-b border-line">
+        {/* Nền vải chuyển động */}
+        <div className="absolute inset-0">
+          <FabricCanvas />
+        </div>
+        {/* Lớp tối để chữ luôn tương phản đủ, bất kể shader sáng tới đâu */}
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/40 to-ink" />
 
         <motion.div
           initial="hidden"
           animate="show"
-          transition={{ staggerChildren: 0.09 }}
-          className="relative mx-auto flex max-w-4xl flex-col items-center px-4 py-28 text-center sm:px-6 md:py-36"
+          transition={{ staggerChildren: 0.1, delayChildren: 0.1 }}
+          className="relative mx-auto w-full max-w-7xl px-6 py-28 lg:px-10"
         >
-          <motion.div
-            variants={heroItem}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 px-4 py-1.5 text-xs font-medium text-zinc-400 backdrop-blur-sm"
+          <motion.p
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="eyebrow mb-8"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Bộ sưu tập mới đã có mặt
-          </motion.div>
+            Bộ sưu tập 2026
+          </motion.p>
 
           <motion.h1
-            variants={heroItem}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-6 text-5xl font-extrabold leading-[1.05] tracking-tight text-white md:text-7xl"
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-10 max-w-5xl text-5xl leading-[0.98] sm:text-6xl md:text-7xl lg:text-[5.75rem]"
           >
-            Thời trang hiện đại,
+            Chất liệu kể
             <br />
-            <span className="text-zinc-500">phong cách của bạn.</span>
+            <span className="italic text-accent">câu chuyện</span> của bạn
           </motion.h1>
 
           <motion.p
-            variants={heroItem}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-10 max-w-xl text-base leading-relaxed text-zinc-400 md:text-lg"
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-12 max-w-md text-sm leading-relaxed text-neutral-400 md:text-base"
           >
-            Chất liệu tốt, phom dáng chuẩn, giá minh bạch. Tuyển chọn cho cả nam
-            và nữ — giao nhanh, đổi trả trong 7 ngày.
+            Thời trang nam và nữ được tuyển chọn theo phom dáng và chất vải.
+            Giao nhanh toàn quốc, đổi trả trong 7 ngày.
           </motion.p>
 
           <motion.div
-            variants={heroItem}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col gap-3 sm:flex-row"
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-wrap items-center gap-4"
           >
             <Link
               to="/category"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-zinc-950 transition-all duration-300 hover:bg-accent hover:text-white"
+              className="group inline-flex items-center gap-3 bg-neutral-50 px-8 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-ink transition-colors duration-300 hover:bg-accent hover:text-white"
             >
-              Khám phá ngay
+              Xem bộ sưu tập
               <ArrowRight
-                size={16}
+                size={15}
                 className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
             <Link
               to="/category?gioi_tinh=1"
-              className="inline-flex items-center justify-center rounded-xl border border-zinc-800 px-7 py-3.5 text-sm font-semibold text-zinc-300 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-900 hover:text-white"
+              className="hover-line inline-flex items-center border border-line-strong px-8 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-neutral-300 transition-colors duration-300 hover:text-white"
             >
-              Xem hàng nam
+              Hàng nam
             </Link>
+          </motion.div>
+        </motion.div>
+
+        {/* Gợi ý cuộn xuống */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ArrowDown size={18} className="text-neutral-600" />
           </motion.div>
         </motion.div>
       </section>
 
-      {/* ---------------- Cam kết dịch vụ ---------------- */}
-      <section className="border-b border-zinc-900">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-zinc-900 sm:px-6 md:grid-cols-4">
+      {/* ==================== Dải ảnh chạy ngang ==================== */}
+      {marquee.length > 0 && (
+        <section className="overflow-hidden border-b border-line py-6">
+          <div className="marquee-track gap-6">
+            {[...marquee, ...marquee].map((p, i) => (
+              <Link
+                key={`${p.id}-${i}`}
+                to={`/products/${p.id}`}
+                className="group relative h-40 w-32 shrink-0 overflow-hidden bg-ink-1 md:h-52 md:w-40"
+                aria-hidden={i >= marquee.length}
+                tabIndex={i >= marquee.length ? -1 : 0}
+              >
+                <img
+                  src={`${IMG_BASE}${p.hinh_anh}`}
+                  alt={p.ten_sp}
+                  loading="lazy"
+                  className="h-full w-full object-cover opacity-60 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ==================== Cam kết ==================== */}
+      <section className="border-b border-line">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 lg:grid-cols-4">
           {SERVICES.map(({ icon: Icon, title, desc }, i) => (
             <Reveal
               key={title}
-              delay={i * 0.06}
-              className="flex items-center gap-3 bg-zinc-950 px-4 py-6"
+              delay={i * 0.07}
+              className={`border-line px-6 py-10 lg:px-10 ${
+                i % 2 === 1 ? "" : "border-r"
+              } ${i < 2 ? "border-b lg:border-b-0" : ""} ${
+                i === 1 ? "lg:border-r" : ""
+              } ${i === 2 ? "border-r" : ""}`}
             >
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-2.5">
-                <Icon size={18} className="text-accent" strokeWidth={1.8} />
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-zinc-100">{title}</p>
-                <p className="truncate text-xs text-zinc-500">{desc}</p>
-              </div>
+              <Icon size={20} className="mb-5 text-accent" strokeWidth={1.5} />
+              <p className="mb-1.5 text-sm font-medium text-neutral-100">{title}</p>
+              <p className="text-xs text-neutral-500">{desc}</p>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* ---------------- Bộ sưu tập theo giới tính ---------------- */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
-        <Reveal className="mb-10">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600">
-            Bộ sưu tập
-          </p>
-          <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Chọn theo phong cách
-          </h2>
+      {/* ==================== Bộ sưu tập ==================== */}
+      <section className="mx-auto max-w-7xl px-6 py-28 lg:px-10">
+        <Reveal className="mb-14">
+          <p className="eyebrow mb-5">Bộ sưu tập</p>
+          <h2 className="text-4xl md:text-5xl">Chọn theo phong cách</h2>
         </Reveal>
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-px bg-line md:grid-cols-2">
           {COLLECTIONS.map((c, i) => (
-            <Reveal key={c.to} delay={i * 0.1}>
+            <Reveal key={c.to} delay={i * 0.12}>
               <Link
                 to={c.to}
-                className="group glow-border relative flex h-56 flex-col justify-end overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8"
+                className="group relative flex h-72 flex-col justify-between bg-ink p-10 transition-colors duration-300 hover:bg-ink-1"
               >
-                <span className="absolute right-7 top-7 text-zinc-600 transition-all duration-300 group-hover:text-accent">
+                <div className="flex items-start justify-between">
+                  <span className="eyebrow">{c.index}</span>
                   <ArrowUpRight
-                    size={22}
-                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    size={24}
+                    strokeWidth={1.2}
+                    className="text-neutral-700 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-accent"
                   />
-                </span>
-                <p className="mb-2 text-xs font-medium uppercase tracking-[0.14em] text-zinc-600">
-                  {c.count}
-                </p>
-                <h3 className="mb-1.5 text-2xl font-bold text-white">{c.title}</h3>
-                <p className="text-sm text-zinc-500">{c.desc}</p>
+                </div>
+                <div>
+                  <h3 className="mb-3 text-5xl transition-colors duration-300 group-hover:text-accent">
+                    {c.title}
+                  </h3>
+                  <p className="text-sm text-neutral-500">{c.desc}</p>
+                </div>
               </Link>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* ---------------- Danh sách sản phẩm ---------------- */}
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
-        <Reveal className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      {/* ==================== Sản phẩm ==================== */}
+      <section className="mx-auto max-w-7xl px-6 pb-28 lg:px-10">
+        <Reveal className="mb-12 flex flex-col gap-6 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-600">
-              Sản phẩm
-            </p>
-            <h2 className="text-3xl font-bold text-white md:text-4xl">Đang được chú ý</h2>
+            <p className="eyebrow mb-5">Sản phẩm</p>
+            <h2 className="text-4xl md:text-5xl">Đang được chú ý</h2>
           </div>
 
-          <div className="flex gap-1 self-start rounded-xl border border-zinc-800 bg-zinc-900/60 p-1 sm:self-auto">
+          <div className="flex gap-8">
             {TABS.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                className={`link-underline pb-1 text-xs font-semibold uppercase tracking-[0.14em] transition-colors duration-300 ${
                   tab === t.key
-                    ? "bg-zinc-100 text-zinc-950"
-                    : "text-zinc-400 hover:text-white"
+                    ? "text-accent"
+                    : "text-neutral-500 hover:text-neutral-200"
                 }`}
               >
                 {t.label}
@@ -226,9 +270,11 @@ export default function Home() {
         {isLoading ? (
           <LoadingSpinner />
         ) : products.length === 0 ? (
-          <p className="py-20 text-center text-sm text-zinc-600">Không có sản phẩm nào</p>
+          <p className="py-24 text-center text-sm text-neutral-600">
+            Không có sản phẩm nào
+          </p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
             {products.map((p, i) => (
               <Reveal key={p.id} delay={Math.min(i, 7) * 0.05}>
                 <ProductCard product={p} onAddToCart={handleAddToCart} />
