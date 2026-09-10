@@ -24,27 +24,32 @@ Hệ thống thương mại điện tử bán quần áo thời trang nam/nữ, 
 
 ### Website khách hàng
 
-| Trang chủ | Danh sách sản phẩm |
-|:---:|:---:|
-| <img src="docs/screenshots/01-trang-chu.png" width="100%" /> | <img src="docs/screenshots/02-danh-sach-san-pham.png" width="100%" /> |
-| Banner, danh mục nổi bật, tìm kiếm | Lọc theo tab, badge giảm giá, thêm vào giỏ |
-
 <p align="center">
-  <img src="docs/screenshots/03-chi-tiet-san-pham.png" width="85%" /><br>
-  <em>Chi tiết sản phẩm — chọn size, đánh giá của khách hàng</em>
+  <img src="docs/screenshots/01-trang-chu.png" width="100%" /><br>
+  <em>Trang chủ — ảnh đầu trang đặt trên nền vải dệt bằng WebGL</em>
 </p>
+
+| Danh sách sản phẩm | Chi tiết sản phẩm |
+|:---:|:---:|
+| <img src="docs/screenshots/02-danh-sach-san-pham.png" width="100%" /> | <img src="docs/screenshots/03-chi-tiet-san-pham.png" width="100%" /> |
+| Lọc theo tab, nhãn giảm giá, thêm nhanh vào giỏ | Chọn size, số lượng, đánh giá của khách |
 
 ### Trang quản trị
 
 <p align="center">
-  <img src="docs/screenshots/05-admin-dashboard.png" width="100%" /><br>
-  <em>Dashboard — doanh thu, số đơn, người dùng và danh sách đơn gần đây</em>
+  <img src="docs/screenshots/04-admin-dashboard.png" width="100%" /><br>
+  <em>Dashboard — doanh thu tách theo trạng thái đơn, đơn đã huỷ không tính vào doanh thu</em>
 </p>
 
 | Quản lý sản phẩm | Quản lý đơn hàng |
 |:---:|:---:|
-| <img src="docs/screenshots/06-admin-san-pham.png" width="100%" /> | <img src="docs/screenshots/07-admin-don-hang.png" width="100%" /> |
+| <img src="docs/screenshots/05-admin-san-pham.png" width="100%" /> | <img src="docs/screenshots/06-admin-don-hang.png" width="100%" /> |
 | Thêm, sửa, xoá sản phẩm kèm ảnh | Xem chi tiết và cập nhật trạng thái đơn |
+
+<p align="center">
+  <img src="docs/screenshots/07-admin-anh-trang-chu.png" width="100%" /><br>
+  <em>Ảnh trang chủ — tải ảnh rồi kéo để chọn phần hiển thị, hoặc chỉnh bằng thanh trượt</em>
+</p>
 
 ---
 
@@ -150,8 +155,12 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
 
 ### Quản trị viên (Admin)
 
-- Dashboard thống kê (doanh thu, tổng đơn, tổng khách hàng)
-- Quản lý sản phẩm: CRUD đầy đủ + upload ảnh (MIME validate, max 5MB)
+- Dashboard thống kê: doanh thu từ đơn đã hoàn thành, doanh thu dự kiến từ đơn
+  chờ xử lý và đang giao, tổng đơn, tổng khách hàng. Đơn đã huỷ không tính vào
+  doanh thu, chỉ hiển thị dưới dạng ghi chú
+- Quản lý sản phẩm: CRUD đầy đủ + upload ảnh (jpg / png / webp)
+- Quản lý ảnh trang chủ: đặt ảnh cho phần mở đầu và hai ô bộ sưu tập, kéo trực
+  tiếp trên ảnh để chọn phần hiển thị hoặc chỉnh bằng thanh trượt
 - Quản lý đơn hàng: xem danh sách, chi tiết, cập nhật trạng thái
 - Quản lý người dùng: xem danh sách và chi tiết
 - Quản lý đánh giá: phản hồi hoặc xóa
