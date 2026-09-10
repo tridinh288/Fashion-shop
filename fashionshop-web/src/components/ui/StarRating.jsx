@@ -7,7 +7,11 @@ export default function StarRating({ rating, max = 5, size = 16 }) {
         <Star
           key={i}
           size={size}
-          className={i < Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+          className={
+            i < Math.round(rating)
+              ? "fill-accent text-accent"
+              : "text-zinc-700"
+          }
         />
       ))}
     </div>

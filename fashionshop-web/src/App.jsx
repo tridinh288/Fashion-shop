@@ -36,7 +36,7 @@ function CartInitializer() {
 
 function Layout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-zinc-950">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
@@ -48,7 +48,16 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+        <Toaster position="top-right" toastOptions={{
+            duration: 3000,
+            style: {
+              background: "#18181b",
+              color: "#e4e4e7",
+              border: "1px solid #27272a",
+              borderRadius: "12px",
+              fontSize: "14px",
+            },
+          }} />
         <CartInitializer />
         <Layout>
           <Routes>
