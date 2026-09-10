@@ -5,7 +5,7 @@ Hệ thống thương mại điện tử bán quần áo thời trang nam/nữ, 
 ## 🔗 Live Demo
 
 - 🛍️ **Website (khách):** https://fashionshop-web-s4av.onrender.com
-- 🔐 **Trang quản trị:** https://fashionshop-admin.onrender.com — đăng nhập demo: `admin@fashionshop.vn` / `Admin@123`
+- 🔐 **Trang quản trị:** https://fashionshop-admin.onrender.com — đăng nhập demo: `admin@fashionshop.vn` / `Admin123456`
 - 🔌 **API:** https://fashion-shop-4wds.onrender.com/api/v1/products
 
 > ⚠️ API chạy trên gói free của Render nên "ngủ" sau ~15 phút không truy cập — lần tải đầu có thể mất ~30–50 giây để đánh thức, sau đó sẽ nhanh bình thường.
@@ -472,7 +472,7 @@ npm run test:e2e
 
 | Method | Endpoint | Query Params | Mô tả |
 |---|---|---|---|
-| `GET` | `/products` | `page`, `keyword`, `category_id`, `gender` | Danh sách sản phẩm (phân trang 8/trang) |
+| `GET` | `/products` | `page`, `keyword`, `category_id`, `gender` | Danh sách sản phẩm (phân trang 10/trang) |
 | `GET` | `/products/{id}` | — | Chi tiết sản phẩm (kèm category + reviews) |
 
 ---
