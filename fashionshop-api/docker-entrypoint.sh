@@ -31,7 +31,16 @@ php artisan route:cache
 # Chạy migration
 php artisan migrate --no-interaction --force
 
-# Nạp dữ liệu mẫu cho database SQLite vừa tạo
+# Nạp dữ liệu mẫu khi database còn trống. Áp dụng cho cả SQLite lẫn MySQL để
+# một database mới (ví dụ TiDB vừa tạo) tự có sẵn danh mục và sản phẩm.
+# Seeder dùng firstOrCreate nên chạy lại cũng không sinh dữ liệu trùng.
+if [ "$NEEDS_SEED" != "1" ]; then
+  PRODUCT_COUNT=$(php artisan tinker --execute="echo DB::table('products')->count();" 2>/dev/null | tr -cd '0-9')
+  if [ -z "$PRODUCT_COUNT" ] || [ "$PRODUCT_COUNT" = "0" ]; then
+    NEEDS_SEED=1
+  fi
+fi
+
 if [ "$NEEDS_SEED" = "1" ]; then
   php artisan db:seed --no-interaction --force
 fi

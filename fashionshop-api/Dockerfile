@@ -1,6 +1,6 @@
 FROM php:8.3-cli-alpine
 
-RUN apk add --no-cache git zip unzip curl \
+RUN apk add --no-cache git zip unzip curl ca-certificates \
     && docker-php-ext-install pdo pdo_mysql \
     && (php -m | grep -qi '^pdo_sqlite$' || docker-php-ext-install pdo_sqlite) \
     && curl -sS https://getcomposer.org/installer \
