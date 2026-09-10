@@ -34,79 +34,79 @@ export default function Contact() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Liên Hệ</h1>
-      <p className="text-center text-gray-500 mb-10">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
+      <h1 className="text-3xl font-bold text-neutral-100 mb-2 text-center">Liên Hệ</h1>
+      <p className="text-center text-neutral-500 mb-10">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Info */}
         <div className="space-y-6">
           <div className="flex items-start gap-4">
-            <div className="bg-blue-100 p-3 rounded-xl shrink-0">
-              <MapPin size={20} className="text-blue-600" />
+            <div className="bg-accent/15 p-3 shrink-0">
+              <MapPin size={20} className="text-accent" />
             </div>
             <div>
-              <p className="font-semibold text-gray-800">Địa chỉ</p>
-              <p className="text-gray-500 text-sm">123 Đường Thời Trang, Quận 1, TP.HCM</p>
+              <p className="font-semibold text-neutral-100">Địa chỉ</p>
+              <p className="text-neutral-500 text-sm">123 Đường Thời Trang, Quận 1, TP.HCM</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
-            <div className="bg-blue-100 p-3 rounded-xl shrink-0">
-              <Phone size={20} className="text-blue-600" />
+            <div className="bg-accent/15 p-3 shrink-0">
+              <Phone size={20} className="text-accent" />
             </div>
             <div>
-              <p className="font-semibold text-gray-800">Điện thoại</p>
-              <p className="text-gray-500 text-sm">0901 234 567</p>
+              <p className="font-semibold text-neutral-100">Điện thoại</p>
+              <p className="text-neutral-500 text-sm">0901 234 567</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
-            <div className="bg-blue-100 p-3 rounded-xl shrink-0">
-              <Mail size={20} className="text-blue-600" />
+            <div className="bg-accent/15 p-3 shrink-0">
+              <Mail size={20} className="text-accent" />
             </div>
             <div>
-              <p className="font-semibold text-gray-800">Email</p>
-              <p className="text-gray-500 text-sm">support@fashionshop.vn</p>
+              <p className="font-semibold text-neutral-100">Email</p>
+              <p className="text-neutral-500 text-sm">support@fashionshop.vn</p>
             </div>
           </div>
         </div>
 
         {/* Form */}
-        <div className="bg-white border rounded-2xl p-6 shadow-sm">
+        <div className="bg-ink-1 border p-6">
           <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Họ và Tên</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">Họ và Tên</label>
               <input
                 {...register("fullname")}
                 placeholder="Nguyễn Văn A"
-                className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40"
               />
               {errors.fullname && <p className="text-red-500 text-xs mt-1">{errors.fullname.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">Email</label>
               <input
               {...register("email")}
               name="email"
-              type="text"
-              autoComplete="off"
+              type="email"
+              autoComplete="email"
               placeholder="email@example.com"
-              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40"
             />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nội Dung</label>
+              <label className="block text-sm font-medium text-neutral-300 mb-1">Nội Dung</label>
               <textarea
                 {...register("message")}
                 rows={5}
                 placeholder="Nội dung tin nhắn..."
-                className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
+                className="w-full border px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40 resize-none"
               />
               {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 rounded-xl transition-colors"
+              className="w-full bg-accent hover:bg-accent-hover disabled:bg-accent/40 text-white font-semibold py-3 transition-colors"
             >
               {loading ? "Đang gửi..." : "Gửi Liên Hệ"}
             </button>

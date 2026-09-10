@@ -42,24 +42,24 @@ export default function Search() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 mb-6">
-        <SearchIcon size={20} className="text-gray-400" />
-        <h1 className="text-xl font-bold text-gray-800">
-          Kết quả tìm kiếm: <span className="text-blue-600">"{q}"</span>
+        <SearchIcon size={20} className="text-neutral-600" />
+        <h1 className="text-xl font-bold text-neutral-100">
+          Kết quả tìm kiếm: <span className="text-accent">"{q}"</span>
         </h1>
       </div>
 
       {!q ? (
-        <p className="text-gray-400 text-center py-16">Nhập từ khóa để tìm kiếm sản phẩm</p>
+        <p className="text-neutral-600 text-center py-16">Nhập từ khóa để tìm kiếm sản phẩm</p>
       ) : isLoading ? (
         <LoadingSpinner />
       ) : products.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-gray-500 text-lg mb-2">Không tìm thấy kết quả cho "{q}"</p>
-          <p className="text-gray-400 text-sm">Thử tìm với từ khóa khác</p>
+          <p className="text-neutral-500 text-lg mb-2">Không tìm thấy kết quả cho "{q}"</p>
+          <p className="text-neutral-600 text-sm">Thử tìm với từ khóa khác</p>
         </div>
       ) : (
         <>
-          <p className="text-sm text-gray-500 mb-4">Tìm thấy {products.length} sản phẩm</p>
+          <p className="text-sm text-neutral-500 mb-4">Tìm thấy {products.length} sản phẩm</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((p) => (
               <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />

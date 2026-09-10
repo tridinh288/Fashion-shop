@@ -10,23 +10,23 @@ export default function OrderSuccess() {
         <div className="flex justify-center mb-6">
           <CheckCircle size={80} className="text-green-500" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Đặt Hàng Thành Công!</h1>
-        <p className="text-gray-500 mb-2">Cảm ơn bạn đã mua sắm tại FashionShop</p>
+        <h1 className="text-2xl font-bold text-neutral-100 mb-2">Đặt Hàng Thành Công!</h1>
+        <p className="text-neutral-500 mb-2">Cảm ơn bạn đã mua sắm tại FashionShop</p>
         {id && (
-          <p className="text-sm text-gray-400 mb-8">
-            Mã đơn hàng: <span className="font-semibold text-gray-700">#{id}</span>
+          <p className="text-sm text-neutral-600 mb-8">
+            Mã đơn hàng: <span className="font-semibold text-neutral-300">#{id}</span>
           </p>
         )}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             to={`/orders/${id}`}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+            className="bg-accent hover:bg-accent-hover text-white font-semibold px-6 py-3 transition-colors"
           >
             Xem Chi Tiết Đơn
           </Link>
           <Link
             to="/"
-            className="border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold px-6 py-3 rounded-xl transition-colors"
+            className="border border-line hover:bg-ink text-neutral-300 font-semibold px-6 py-3 transition-colors"
           >
             Tiếp Tục Mua Sắm
           </Link>

@@ -25,8 +25,18 @@
 }
 
 @layer base {
+
+  /* Tailwind v4 để border trần lấy currentColor; ghim về màu kẻ của hệ thiết kế */
+  *, ::before, ::after {
+    border-color: var(--color-line);
+  }
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Radio, checkbox, thanh cuộn của input dùng màu nhấn thay vì xanh mặc định */
+  input, textarea, select {
+    accent-color: var(--color-accent);
   }
 
   body {
