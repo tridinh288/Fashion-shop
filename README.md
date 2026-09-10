@@ -1,5 +1,13 @@
 # FashionShop
 
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![TiDB Cloud](https://img.shields.io/badge/TiDB_Cloud-Serverless-DB2D2E?logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Render-2496ED?logo=docker&logoColor=white)
+
 Hệ thống thương mại điện tử bán quần áo thời trang nam/nữ, xây dựng theo kiến trúc **API-first** với backend Laravel và hai frontend React riêng biệt.
 
 ## 🔗 Live Demo
@@ -9,6 +17,34 @@ Hệ thống thương mại điện tử bán quần áo thời trang nam/nữ, 
 - 🔌 **API:** https://fashion-shop-4wds.onrender.com/api/v1/products
 
 > ⚠️ API chạy trên gói free của Render nên "ngủ" sau ~15 phút không truy cập — lần tải đầu có thể mất ~30–50 giây để đánh thức, sau đó sẽ nhanh bình thường.
+
+---
+
+## 📸 Giao Diện
+
+### Website khách hàng
+
+| Trang chủ | Danh sách sản phẩm |
+|:---:|:---:|
+| <img src="docs/screenshots/01-trang-chu.png" width="100%" /> | <img src="docs/screenshots/02-danh-sach-san-pham.png" width="100%" /> |
+| Banner, danh mục nổi bật, tìm kiếm | Lọc theo tab, badge giảm giá, thêm vào giỏ |
+
+<p align="center">
+  <img src="docs/screenshots/03-chi-tiet-san-pham.png" width="85%" /><br>
+  <em>Chi tiết sản phẩm — chọn size, đánh giá của khách hàng</em>
+</p>
+
+### Trang quản trị
+
+<p align="center">
+  <img src="docs/screenshots/05-admin-dashboard.png" width="100%" /><br>
+  <em>Dashboard — doanh thu, số đơn, người dùng và danh sách đơn gần đây</em>
+</p>
+
+| Quản lý sản phẩm | Quản lý đơn hàng |
+|:---:|:---:|
+| <img src="docs/screenshots/06-admin-san-pham.png" width="100%" /> | <img src="docs/screenshots/07-admin-don-hang.png" width="100%" /> |
+| Thêm, sửa, xoá sản phẩm kèm ảnh | Xem chi tiết và cập nhật trạng thái đơn |
 
 ---
 
