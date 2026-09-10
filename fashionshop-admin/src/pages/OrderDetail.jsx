@@ -115,25 +115,46 @@ export default function OrderDetail() {
         </div>
       </div>
 
-      {/* Update status */}
+      {/* Cập nhật trạng thái: chỉ hiện những bước đi được từ trạng thái hiện tại,
+          để quản trị viên không bấm phải thứ chắc chắn bị API từ chối */}
       <div className="bg-white border rounded-xl p-4">
-        <p className="font-semibold text-gray-700 text-sm mb-3">Cập Nhật Trạng Thái</p>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(ORDER_STATUS).map(([key, val]) => (
-            <button
-              key={key}
-              onClick={() => handleStatus(key)}
-              disabled={saving || order.status === key}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
-                order.status === key
-                  ? "border-blue-500 text-blue-600 bg-blue-50"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-              }`}
-            >
-              {val.label}
-            </button>
-          ))}
-        </div>
+        <p className="font-semibold text-gray-700 text-sm mb-1">Cập Nhật Trạng Thái</p>
+        <p className="text-xs text-gray-500 mb-3">
+          Hiện tại: <span className="font-medium text-gray-700">{ORDER_STATUS[order.status]?.label ?? order.status}</span>
+        </p>
+
+        {(ORDER_TRANSITIONS[order.status] ?? []).length === 0 ? (
+          <p className="text-sm text-gray-500">
+            Đơn đã {ORDER_STATUS[order.status]?.label.toLowerCase()}, không thể đổi trạng thái nữa.
+          </p>
+        ) : (
+          <>
+            <div className="flex flex-wrap gap-2">
+              {(ORDER_TRANSITIONS[order.status] ?? []).map((key) => {
+                const huy = key === "cancelled";
+                return (
+                  <button
+                    key={key}
+                    onClick={() => handleStatus(key)}
+                    disabled={saving}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border disabled:opacity-50 ${
+                      huy
+                        ? "border-red-200 text-red-600 hover:bg-red-50"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {ORDER_STATUS[key]?.label ?? key}
+                  </button>
+                );
+              })}
+            </div>
+            {ORDER_TRANSITIONS[order.status].includes("cancelled") && (
+              <p className="text-xs text-gray-500 mt-3">
+                Huỷ đơn sẽ trả toàn bộ sản phẩm trong đơn về lại kho.
+              </p>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

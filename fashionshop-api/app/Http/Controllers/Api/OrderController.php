@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -58,61 +60,100 @@ class OrderController extends Controller
             return response()->json(['message' => 'Giỏ hàng trống'], 400);
         }
 
-        $total = $cartItems->sum(fn($item) => $item->product->gia * $item->quantity) + 30000;
+        // Báo sớm cho khách biết món nào không đủ hàng, trước khi vào giao dịch
+        $thieu = $cartItems->filter(
+            fn ($item) => ! $item->product || $item->product->so_luong < $item->quantity
+        );
 
-        $order = Order::create([
-            'user_id'  => $request->user()->id,
-            'fullname' => $request->fullname,
-            'phone'    => $request->phone,
-            'address'  => $request->address,
-            'payment'  => $request->payment,
-            'total'    => $total,
-            'status'   => 'pending',
-        ]);
-
-        foreach ($cartItems as $item) {
-            OrderDetail::create([
-                'order_id'   => $order->id,
-                'product_id' => $item->product_id,
-                'quantity'   => $item->quantity,
-                'price'      => $item->product->gia,
-                'size'       => $item->size,
-            ]);
+        if ($thieu->isNotEmpty()) {
+            return response()->json([
+                'message' => 'Một số sản phẩm không đủ số lượng trong kho',
+                'items'   => $thieu->map(fn ($item) => [
+                    'product_id' => $item->product_id,
+                    'ten_sp'     => $item->product->ten_sp ?? null,
+                    'yeu_cau'    => $item->quantity,
+                    'con_lai'    => $item->product->so_luong ?? 0,
+                ])->values(),
+            ], 422);
         }
 
-        Cart::where('user_id', $request->user()->id)->delete();
+        $shippingFee = 30000;
+        $total = $cartItems->sum(fn ($item) => $item->product->gia * $item->quantity) + $shippingFee;
 
-    $shippingFee = 30000;
+        try {
+            $order = DB::transaction(function () use ($request, $cartItems, $total) {
+                $order = Order::create([
+                    'user_id'  => $request->user()->id,
+                    'fullname' => $request->fullname,
+                    'phone'    => $request->phone,
+                    'address'  => $request->address,
+                    'payment'  => $request->payment,
+                    'total'    => $total,
+                    'status'   => 'pending',
+                ]);
 
-    $total = $cartItems->sum(
-        fn($item) => $item->product->gia * $item->quantity
-    ) + $shippingFee;         return response()->json([
-        'message' => 'Đặt hàng thành công',
-        'shipping_fee' => $shippingFee,
-        'order' => $order->load('details')
-    ], 200);
+                foreach ($cartItems as $item) {
+                    // Trừ kho kèm điều kiện còn đủ hàng: nếu có người khác vừa
+                    // mua hết trong lúc này thì không dòng nào bị cập nhật và
+                    // cả giao dịch bị huỷ, tránh bán quá số lượng đang có.
+                    $daTru = Product::where('id', $item->product_id)
+                        ->where('so_luong', '>=', $item->quantity)
+                        ->decrement('so_luong', $item->quantity);
+
+                    if ($daTru === 0) {
+                        throw new \RuntimeException($item->product->ten_sp ?? 'Sản phẩm');
+                    }
+
+                    OrderDetail::create([
+                        'order_id'   => $order->id,
+                        'product_id' => $item->product_id,
+                        'quantity'   => $item->quantity,
+                        'price'      => $item->product->gia,
+                        'size'       => $item->size,
+                    ]);
+                }
+
+                Cart::where('user_id', $request->user()->id)->delete();
+
+                return $order;
+            });
+        } catch (\RuntimeException $e) {
+            return response()->json([
+                'message' => "Sản phẩm \"{$e->getMessage()}\" vừa hết hàng, vui lòng thử lại",
+            ], 422);
         }
+
+        return response()->json([
+            'message'      => 'Đặt hàng thành công',
+            'shipping_fee' => $shippingFee,
+            'order'        => $order->load('details'),
+        ], 200);
+    }
 
     public function cancel(Request $request, $id)
     {
         $order = Order::where('id', $id)
-        ->where('user_id', $request->user()->id)
-        ->firstOrFail();
+            ->where('user_id', $request->user()->id)
+            ->firstOrFail();
 
-    if ($order->status !== 'pending') {
+        if ($order->status !== 'pending') {
+            return response()->json([
+                'message' => 'Không thể hủy đơn hàng này'
+            ], 400);
+        }
+
+        // Huỷ đơn thì trả hàng về kho, gộp cùng một giao dịch để không rơi vào
+        // cảnh đơn đã huỷ nhưng kho chưa được cộng lại
+        DB::transaction(function () use ($order) {
+            $order->restoreStock();
+            $order->update(['status' => 'cancelled']);
+        });
+
         return response()->json([
-            'message' => 'Không thể hủy đơn hàng này'
-        ], 400);
+            'message'    => 'Đã hủy đơn hàng',
+            'status'     => 'cancelled',
+            'updated_at' => $order->updated_at,
+        ], 200);
     }
 
-    $order->update([
-        'status' => 'cancelled'
-    ]);
-
-    return response()->json([
-        'message' => 'Đã hủy đơn hàng',
-        'status'  => 'cancelled',
-        'updated_at' => $order->updated_at
-    ], 200);
-    }
 }

@@ -12,3 +12,12 @@ export const CONTACT_STATUS = {
 };
 
 export const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+
+// Trạng thái được phép chuyển sang, phải khớp với Order::TRANSITIONS bên API.
+// Đơn đã hoàn thành hoặc đã huỷ là trạng thái cuối, không đổi được nữa.
+export const ORDER_TRANSITIONS = {
+  pending: ["shipping", "cancelled"],
+  shipping: ["completed", "cancelled"],
+  completed: [],
+  cancelled: [],
+};
