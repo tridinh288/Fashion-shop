@@ -163,5 +163,8 @@ class DatabaseSeeder extends Seeder
 
             Product::firstOrCreate(['ten_sp' => $p['ten_sp']], $p);
         }
+
+        // Đơn hàng mẫu để dashboard quản trị có số liệu
+        $this->call(OrderSeeder::class);
     }
 }
