@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Support\HomeCovers;
+use App\Support\UploadStore;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Ảnh trang chủ: ảnh lớn đầu trang và hai ô bộ sưu tập nam / nữ.
@@ -44,13 +44,13 @@ class HomeCoverController extends Controller
         foreach (array_keys(HomeCovers::SLOTS) as $slot) {
             if ($request->hasFile($slot)) {
                 $cu = Setting::get(HomeCovers::pathKey($slot));
-                $moi = $request->file($slot)->store('covers', 'public');
+                $moi = UploadStore::put($request->file($slot), 'covers', $slot);
 
                 Setting::put(HomeCovers::pathKey($slot), $moi);
 
-                // Dọn ảnh cũ để thư mục không phình ra sau mỗi lần đổi
+                // Dọn ảnh cũ để kho không phình ra sau mỗi lần đổi
                 if ($cu && $cu !== $moi) {
-                    Storage::disk('public')->delete($cu);
+                    UploadStore::delete($cu);
                 }
             }
 
@@ -79,9 +79,7 @@ class HomeCoverController extends Controller
             return response()->json(['message' => 'Vị trí ảnh không hợp lệ'], 404);
         }
 
-        if ($cu = Setting::get(HomeCovers::pathKey($slot))) {
-            Storage::disk('public')->delete($cu);
-        }
+        UploadStore::delete(Setting::get(HomeCovers::pathKey($slot)));
 
         Setting::put(HomeCovers::pathKey($slot), null);
         Setting::put(HomeCovers::fitKey($slot), null);

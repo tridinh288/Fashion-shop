@@ -900,6 +900,7 @@ Toàn bộ hệ thống được deploy **miễn phí** và chạy 24/7, độc 
 - API kết nối DB qua các biến `DB_*` và `MYSQL_ATTR_SSL_CA` (trỏ tới kho chứng chỉ hệ thống `/etc/ssl/certs/ca-certificates.crt` trong image).
 - Entrypoint tự chạy `migrate`, và tự `db:seed` khi bảng `products` còn rỗng — nên trỏ API sang một database mới là nó tự nạp đủ danh mục, sản phẩm và đơn hàng mẫu.
 - Đặt `DB_CONNECTION=sqlite` sẽ chạy demo bằng SQLite ngay trong container, không cần database ngoài (dữ liệu sẽ mất khi container khởi động lại).
+- Ảnh quản trị viên tải lên (ảnh trang chủ, ảnh sản phẩm) được lưu **trong database** chứ không chỉ trên ổ đĩa: ổ đĩa của container là tạm, mỗi lần Render dựng lại là sạch. Entrypoint chạy `php artisan uploads:restore` lúc khởi động để ghi chúng ra đĩa trở lại. Ảnh trên 2000px được thu nhỏ trước khi lưu, giữ nguyên định dạng để không làm hỏng nền trong suốt của ảnh tách nền.
 - `config/cors.php` mở CORS cho request cross-origin từ frontend.
 - Static Site cấu hình rewrite `/* → /index.html` để React Router hoạt động khi reload trang con.
 - Container bind cổng động qua `${PORT}` do Render cấp.

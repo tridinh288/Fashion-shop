@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Support\UploadStore;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -46,7 +46,7 @@ class ProductController extends Controller
 
         $hinh_anh = null;
         if ($request->hasFile('hinh_anh')) {
-            $hinh_anh = $request->file('hinh_anh')->store('products', 'public');
+            $hinh_anh = UploadStore::put($request->file('hinh_anh'), 'products', 'hinh_anh');
         }
 
         $product = Product::create([
@@ -82,10 +82,15 @@ class ProductController extends Controller
 
         if ($request->hasFile('hinh_anh')) {
             $anh_cu = $product->hinh_anh;
-            $product->hinh_anh = $request->file('hinh_anh')->store('products', 'public');
+            $product->hinh_anh = UploadStore::put($request->file('hinh_anh'), 'products', 'hinh_anh');
 
-            if ($anh_cu && $anh_cu !== $product->hinh_anh) {
-                Storage::disk('public')->delete($anh_cu);
+            // Ảnh mẫu được nhiều sản phẩm dùng chung, chỉ xoá khi không còn ai dùng
+            $con_dung = $anh_cu && Product::where('hinh_anh', $anh_cu)
+                ->where('id', '!=', $product->id)
+                ->exists();
+
+            if ($anh_cu && $anh_cu !== $product->hinh_anh && ! $con_dung) {
+                UploadStore::delete($anh_cu);
             }
         }
 

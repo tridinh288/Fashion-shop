@@ -45,4 +45,8 @@ if [ "$NEEDS_SEED" = "1" ]; then
   php artisan db:seed --no-interaction --force
 fi
 
+# Ổ đĩa của container là tạm, mỗi lần dựng lại là sạch. Ảnh quản trị viên tải
+# lên được cất trong database nên ghi chúng ra đĩa lại trước khi mở cổng.
+php artisan uploads:restore --no-interaction || true
+
 exec php artisan serve --host=0.0.0.0 --port=${PORT:-8000}

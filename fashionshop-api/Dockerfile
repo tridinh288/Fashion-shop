@@ -1,8 +1,12 @@
 FROM php:8.3-cli-alpine
 
-RUN apk add --no-cache git zip unzip curl ca-certificates \
-    && docker-php-ext-install pdo pdo_mysql \
+# GD để thu nhỏ ảnh tải lên trước khi cất vào database, xem App\Support\UploadStore
+RUN apk add --no-cache git zip unzip curl ca-certificates libpng libjpeg-turbo freetype libwebp \
+    && apk add --no-cache --virtual .build-deps libpng-dev libjpeg-turbo-dev freetype-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j"$(nproc)" gd pdo pdo_mysql \
     && (php -m | grep -qi '^pdo_sqlite$' || docker-php-ext-install pdo_sqlite) \
+    && apk del .build-deps \
     && curl -sS https://getcomposer.org/installer \
        | php -- --install-dir=/usr/local/bin --filename=composer
 
