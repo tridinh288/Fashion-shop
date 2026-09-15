@@ -50,7 +50,8 @@ Cặp font do `ui-ux-pro-max` đề xuất cho thời trang/editorial; cả hai 
 | Thân (`--font-sans`) | Inter 400/500/600 | Mọi chữ còn lại, gồm tên SP trong thẻ, giá, form, nút |
 
 - Chữ thân 16px, giãn dòng 1.6; không có chữ nội dung dưới 12px.
-- Nhãn nhỏ (`.eyebrow`) và chữ nút dùng Inter 600 in hoa, giãn chữ 0.14–0.18em (bằng CSS `text-transform`, chữ trong DOM giữ nguyên hoa/thường như viết).
+- Nhãn nhỏ (`.eyebrow`) dùng Inter 600 in hoa bằng CSS, giãn chữ 0.16em.
+- Chữ nút, tab, nhãn "Bộ lọc" **không** in hoa bằng CSS (Inter 600, viết hoa chữ đầu). Lý do: Chromium tính `innerText` sau `text-transform`, nên test E2E tìm `Thêm vào giỏ` / `Nổi bật` / `Bộ lọc` sẽ hỏng nếu các chữ này bị in hoa.
 - Tải qua Google Fonts trong `index.html`, `display=swap`, bỏ Be Vietnam Pro.
 
 ### 2.3 Quy tắc thành phần
