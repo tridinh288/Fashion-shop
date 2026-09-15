@@ -40,4 +40,10 @@ return [
         'driver' => env('IMAGE_DRIVER', 'local'),
     ],
 
+    'cloudinary' => [
+        // Dạng cloudinary://<api_key>:<api_secret>@<cloud_name>, lấy ở trang Dashboard của Cloudinary
+        'url'    => env('CLOUDINARY_URL'),
+        'folder' => env('CLOUDINARY_FOLDER', 'fashionshop'),
+    ],
+
 ];
