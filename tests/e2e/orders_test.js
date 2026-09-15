@@ -17,7 +17,7 @@ Scenario('Chuyển đến /login khi truy cập /orders chưa đăng nhập', as
 Scenario('Trang lịch sử đơn hàng hiển thị đúng', async ({ I }) => {
   I.amOnPage('/orders');
   await I.waitForElement('h1', 8);
-  I.see('Lịch Sử Đơn Hàng');
+  I.see('Lịch sử đơn hàng');
 });
 
 Scenario('Thông báo chưa có đơn hàng khi user mới', async ({ I }) => {
@@ -81,7 +81,7 @@ Scenario('Xem danh sách đơn hàng sau khi đặt', async ({ I }) => {
 
   I.amOnPage('/orders');
   await I.waitForElement('h1', 8);
-  I.see('Lịch Sử Đơn Hàng');
+  I.see('Lịch sử đơn hàng');
   await I.waitForElement('a[href*="/orders/"]', 8);
   I.see('Đơn #');
 });

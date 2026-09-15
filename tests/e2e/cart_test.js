@@ -20,7 +20,7 @@ Scenario('Chuyển đến /login khi truy cập /cart chưa đăng nhập', asyn
 Scenario('Trang giỏ hàng hiển thị đúng khi đã đăng nhập', async ({ I }) => {
   I.amOnPage('/cart');
   await I.waitForElement('h1', 8);
-  I.see('Giỏ Hàng');
+  I.see('Giỏ hàng');
 });
 
 Scenario('Giỏ hàng trống hiển thị thông báo', async ({ I }) => {
@@ -46,8 +46,8 @@ Scenario('Xem giỏ hàng sau khi thêm sản phẩm qua API', async ({ I }) => 
 
   I.amOnPage('/cart');
   await I.waitForElement('h1', 8);
-  I.see('Giỏ Hàng');
-  await I.waitForElement('img.object-cover', 8);
+  I.see('Giỏ hàng');
+  await I.waitForElement('[data-testid="cart-item"] img', 8);
 });
 
 Scenario('Tăng số lượng sản phẩm trong giỏ hàng', async ({ I }) => {

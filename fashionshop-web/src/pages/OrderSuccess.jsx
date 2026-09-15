@@ -1,37 +1,30 @@
-import { Link, useParams } from "react-router-dom";
-import { CheckCircle } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { CheckCircle2 } from "lucide-react";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
 
 export default function OrderSuccess() {
   const { id } = useParams();
 
   return (
-    <div className="min-h-[60vh] flex items-center justify-center px-4">
-      <div className="text-center max-w-md">
-        <div className="flex justify-center mb-6">
-          <CheckCircle size={80} className="text-green-500" />
-        </div>
-        <h1 className="text-2xl font-bold text-ink mb-2">Đặt Hàng Thành Công!</h1>
-        <p className="text-ink-soft mb-2">Cảm ơn bạn đã mua sắm tại FashionShop</p>
+    <Container className="flex min-h-[60vh] items-center justify-center py-16">
+      <div className="max-w-lg text-center">
+        <CheckCircle2 size={48} strokeWidth={1.25} className="mx-auto text-accent" aria-hidden="true" />
+        <p className="eyebrow mt-8">Cảm ơn bạn</p>
+        <h1 className="mt-3 font-display text-4xl text-ink sm:text-5xl">Đặt hàng thành công</h1>
+        <p className="mt-4 text-ink-soft">
+          Đơn hàng đã được ghi nhận. Chúng tôi sẽ liên hệ xác nhận trước khi giao.
+        </p>
         {id && (
-          <p className="text-sm text-ink-faint mb-8">
-            Mã đơn hàng: <span className="font-semibold text-ink-soft">#{id}</span>
+          <p className="mt-2 text-sm text-ink-faint">
+            Mã đơn hàng: <span className="font-medium text-ink">#{id}</span>
           </p>
         )}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            to={`/orders/${id}`}
-            className="bg-ink hover:bg-black text-white font-semibold px-6 py-3 rounded-xl transition-colors"
-          >
-            Xem Chi Tiết Đơn
-          </Link>
-          <Link
-            to="/"
-            className="border border-line hover:bg-tile-warm text-ink-soft font-semibold px-6 py-3 rounded-xl transition-colors"
-          >
-            Tiếp Tục Mua Sắm
-          </Link>
+        <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+          <Button to={`/orders/${id}`} size="lg">Xem chi tiết đơn</Button>
+          <Button to="/" variant="secondary" size="lg">Tiếp tục mua sắm</Button>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

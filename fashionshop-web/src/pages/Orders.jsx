@@ -1,10 +1,15 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Package } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { getOrders } from "../api/orderApi";
 import { formatCurrency } from "../utils/formatCurrency";
 import StatusBadge from "../components/ui/StatusBadge";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
+import EmptyState from "../components/ui/EmptyState";
+import SectionHeading from "../components/ui/SectionHeading";
+import AccountNav from "../components/layout/AccountNav";
 
 export default function Orders() {
   const { data, isLoading, isError } = useQuery({
@@ -16,56 +21,51 @@ export default function Orders() {
   const orders = data?.data || [];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* 🔥 luôn render h1 để test không fail */}
-      <h1 className="text-2xl font-bold text-ink mb-6">
-        Lịch Sử Đơn Hàng
-      </h1>
+    <Container className="py-10 lg:py-14">
+      <div className="mx-auto max-w-4xl">
+      {/* Tiêu đề luôn hiện, kể cả khi đang tải (test E2E chờ h1) */}
+      <SectionHeading as="h1" eyebrow="Tài khoản" title="Lịch sử đơn hàng" className="mb-8" />
+      <AccountNav />
 
       {isLoading ? (
         <LoadingSpinner />
       ) : isError ? (
-        <p className="text-center text-red-400">Không tải được đơn hàng</p>
+        <p className="py-16 text-center text-sale">Không tải được đơn hàng</p>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20">
-          <Package size={64} className="text-zinc-200 mx-auto mb-4" />
-          <p className="text-ink-soft text-lg mb-4">Chưa có đơn hàng nào</p>
-          <Link
-            to="/category"
-            className="bg-ink text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-black transition-colors"
-          >
-            Mua Sắm Ngay
-          </Link>
-        </div>
+        <EmptyState
+          title="Chưa có đơn hàng nào"
+          action={<Button to="/category" variant="secondary">Mua sắm ngay</Button>}
+        />
       ) : (
-        <div className="space-y-3">
+        <ul className="divide-y divide-line border-y border-line">
           {orders.map((order) => (
-            <Link
-              key={order.id}
-              to={`/orders/${order.id}`}
-              className="block bg-white border rounded-xl p-4 hover:border-ink hover:shadow-sm transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-ink">
-                    Đơn #{order.id}
-                  </p>
-                  <p className="text-sm text-ink-faint mt-0.5">
+            <li key={order.id}>
+              <Link
+                to={`/orders/${order.id}`}
+                className="group flex items-center gap-4 py-5 transition-colors duration-200 hover:bg-tile/50 sm:px-2"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-ink">Đơn #{order.id}</p>
+                  <p className="mt-0.5 text-sm text-ink-faint">
                     {new Date(order.created_at).toLocaleString("vi-VN")}
                   </p>
                 </div>
-
-                <div className="text-right">
-                  <p className="font-bold text-ink mb-1">
-                    {formatCurrency(order.total)}
-                  </p>
-                  <StatusBadge status={order.status} />
-                </div>
-              </div>
-            </Link>
+                <StatusBadge status={order.status} />
+                <p className="w-28 text-right text-sm font-medium tabular-nums text-ink">
+                  {formatCurrency(order.total)}
+                </p>
+                <ChevronRight
+                  size={18}
+                  strokeWidth={1.5}
+                  className="shrink-0 text-ink-faint transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+      </div>
+    </Container>
   );
 }
