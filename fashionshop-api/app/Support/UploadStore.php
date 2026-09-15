@@ -3,40 +3,38 @@
 namespace App\Support;
 
 use App\Models\Upload;
+use App\Support\Images\ImageStorage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
  * Nơi cất ảnh tải lên.
  *
- * Ảnh được ghi ra ổ đĩa public như trước để phục vụ cho nhanh, đồng thời lưu
- * một bản trong database. Ổ đĩa của Render bị xoá mỗi lần container khởi động
- * lại, nên bản trong database mới là bản thật; bản trên đĩa chỉ là bộ nhớ đệm
- * và được dựng lại khi có người xem ảnh lần đầu sau khi khởi động.
+ * Ảnh được thu nhỏ cho vừa trần dung lượng rồi giao cho kho ảnh đang cấu hình
+ * (xem App\Support\Images). Database chỉ giữ giá trị kho trả về: đường dẫn
+ * tương đối như "products/abc.png" hoặc URL đầy đủ của Cloudinary.
+ *
+ * Bảng uploads chỉ còn được đọc cho những ảnh cũ chưa chuyển đi, xem lệnh
+ * uploads:to-cloudinary.
  */
 class UploadStore
 {
     /** Cạnh dài nhất giữ lại sau khi thu nhỏ */
     public const MAX_EDGE = 2000;
 
-    /**
-     * Trần dung lượng một ảnh sau khi nén. Phải nằm dưới giới hạn kích thước
-     * một dòng của TiDB (6MB) sau khi cộng thêm phần phình ra của base64.
-     */
+    /** Trần dung lượng một ảnh sau khi nén, giữ trang cửa hàng tải nhanh */
     public const MAX_BYTES = 3 * 1024 * 1024;
 
     /** Đuôi file theo kiểu ảnh, dùng cho tên file sinh ra */
-    private const EXTENSIONS = [
+    public const EXTENSIONS = [
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
         'image/webp' => 'webp',
     ];
 
     /**
-     * Cất một ảnh vừa tải lên và trả về đường dẫn tương đối, ví dụ
-     * "covers/abc123.jpg" — đúng dạng vẫn đang lưu trong database từ trước.
+     * Cất một ảnh vừa tải lên và trả về giá trị để lưu vào database.
      *
      * @param  string  $field  Tên trường, chỉ dùng để báo lỗi cho đúng chỗ
      */
@@ -51,59 +49,62 @@ class UploadStore
             ]);
         }
 
-        $ext  = self::EXTENSIONS[$mime] ?? ($file->guessExtension() ?: 'jpg');
-        $path = $folder . '/' . Str::random(40) . '.' . $ext;
-
-        Storage::disk('public')->put($path, $bytes);
-
-        Upload::updateOrCreate(
-            ['path' => $path],
-            ['mime' => $mime, 'size' => strlen($bytes), 'data' => base64_encode($bytes)]
-        );
-
-        return $path;
+        return app(ImageStorage::class)->store($bytes, $mime, $folder);
     }
 
-    /** Xoá một ảnh khỏi cả database lẫn ổ đĩa */
-    public static function delete(?string $path): void
+    /** Giá trị là URL đầy đủ (ảnh trên kho ngoài) chứ không phải đường dẫn trên đĩa */
+    public static function isUrl(?string $ref): bool
     {
-        if (! $path) {
-            return;
-        }
-
-        Upload::where('path', $path)->delete();
-        Storage::disk('public')->delete($path);
-    }
-
-    /** Ảnh còn xem được không: hoặc còn trong database, hoặc còn trên đĩa */
-    public static function exists(?string $path): bool
-    {
-        if (! $path) {
-            return false;
-        }
-
-        return Storage::disk('public')->exists($path)
-            || Upload::where('path', $path)->exists();
+        return $ref !== null && preg_match('#^https?://#i', $ref) === 1;
     }
 
     /**
-     * Lọc ra những đường dẫn còn xem được, trong một lượt truy vấn.
-     *
-     * @param  list<string>  $paths
-     * @return list<string>
+     * Xoá một ảnh. Dọn ảnh chỉ là việc phụ nên kho ngoài lỗi thì ghi log chứ
+     * không làm hỏng thao tác của quản trị viên.
      */
-    public static function existing(array $paths): array
+    public static function delete(?string $ref): void
     {
-        $paths = array_values(array_unique(array_filter($paths)));
-
-        if (! $paths) {
-            return [];
+        if (! $ref) {
+            return;
         }
 
-        $found = Upload::whereIn('path', $paths)->pluck('path')->all();
+        if (self::isUrl($ref)) {
+            rescue(fn () => app(ImageStorage::class)->delete($ref));
+            return;
+        }
+
+        Upload::where('path', $ref)->delete();
+        Storage::disk('public')->delete($ref);
+    }
+
+    /** Ảnh còn xem được không */
+    public static function exists(?string $ref): bool
+    {
+        return self::existing([$ref]) !== [];
+    }
+
+    /**
+     * Lọc ra những ảnh còn xem được. URL của kho ngoài được coi là còn; đường
+     * dẫn thì phải còn trên đĩa hoặc còn trong bảng uploads cũ.
+     *
+     * @param  list<string|null>  $refs
+     * @return list<string>
+     */
+    public static function existing(array $refs): array
+    {
+        $refs = array_values(array_unique(array_filter($refs)));
+
+        $found = array_values(array_filter($refs, [self::class, 'isUrl']));
+        $paths = array_values(array_diff($refs, $found));
+
+        if (! $paths) {
+            return $found;
+        }
+
+        $trong_db = Upload::whereIn('path', $paths)->pluck('path')->all();
 
         foreach ($paths as $path) {
-            if (! in_array($path, $found, true) && Storage::disk('public')->exists($path)) {
+            if (in_array($path, $trong_db, true) || Storage::disk('public')->exists($path)) {
                 $found[] = $path;
             }
         }

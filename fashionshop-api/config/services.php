@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // Kho ảnh tải lên: "local" (ổ đĩa public) hoặc "cloudinary"
+    'images' => [
+        'driver' => env('IMAGE_DRIVER', 'local'),
+    ],
+
 ];
