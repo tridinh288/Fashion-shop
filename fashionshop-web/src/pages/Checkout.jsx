@@ -11,8 +11,7 @@ import { placeOrder } from "../api/orderApi";
 import useCartStore from "../stores/cartStore";
 import { formatCurrency } from "../utils/formatCurrency";
 import { SHIPPING_FEE } from "../utils/constants";
-
-const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+import { imageUrl } from "../utils/imageUrl";
 
 const schema = z.object({
   fullname: z.string().min(2, "Họ tên tối thiểu 2 ký tự"),
@@ -166,7 +165,7 @@ export default function Checkout() {
             <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
               {items.map((item) => {
                 const img = item.product?.hinh_anh
-                  ? `${IMG_BASE}${item.product.hinh_anh}`
+                  ? imageUrl(item.product.hinh_anh)
                   : "https://placehold.co/60x60?text=SP";
                 return (
                   <div key={item.id} className="flex gap-3 items-center">

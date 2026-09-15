@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2, MessageSquare, Star } from "lucide-react";
 import toast from "react-hot-toast";
 import { getReviews, replyReview, deleteReview } from "../api/reviewApi";
-import { IMG_BASE } from "../utils/constants";
+import { imageUrl } from "../utils/imageUrl";
 import Spinner from "../components/ui/Spinner";
 import Pagination from "../components/ui/Pagination";
 
@@ -73,7 +73,7 @@ export default function Reviews() {
                 <div className="flex gap-3 flex-1">
                   {/* Product */}
                   <img
-                    src={r.product?.hinh_anh ? `${IMG_BASE}${r.product.hinh_anh}` : "https://placehold.co/48x48?text=SP"}
+                    src={r.product?.hinh_anh ? imageUrl(r.product.hinh_anh) : "https://placehold.co/48x48?text=SP"}
                     alt=""
                     className="w-12 h-12 object-cover rounded-lg border shrink-0"
                   />

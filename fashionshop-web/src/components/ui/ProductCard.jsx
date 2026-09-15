@@ -3,12 +3,11 @@ import { ShoppingBag } from "lucide-react";
 import { formatCurrency } from "../../utils/formatCurrency";
 import SaleBadge from "./SaleBadge";
 import StarRating from "./StarRating";
-
-const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+import { imageUrl } from "../../utils/imageUrl";
 
 export default function ProductCard({ product, onAddToCart }) {
   const imgSrc = product.hinh_anh
-    ? `${IMG_BASE}${product.hinh_anh}`
+    ? imageUrl(product.hinh_anh)
     : "https://placehold.co/600x760/f4f4f5/a1a1aa?text=Chưa+có+ảnh";
 
   const reviews = product.reviews || [];

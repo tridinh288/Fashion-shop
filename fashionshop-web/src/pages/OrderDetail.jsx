@@ -6,8 +6,7 @@ import { getOrder, cancelOrder } from "../api/orderApi";
 import { formatCurrency } from "../utils/formatCurrency";
 import StatusBadge from "../components/ui/StatusBadge";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-
-const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+import { imageUrl } from "../utils/imageUrl";
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -63,7 +62,7 @@ export default function OrderDetail() {
         <div className="px-4 py-3 bg-tile-warm border-b font-semibold text-ink-soft text-sm">Sản Phẩm</div>
         {details.map((item) => {
           const img = item.product?.hinh_anh
-            ? `${IMG_BASE}${item.product.hinh_anh}`
+            ? imageUrl(item.product.hinh_anh)
             : "https://placehold.co/64x64?text=SP";
           return (
             <div key={item.id} className="flex items-center gap-4 px-4 py-3 border-b last:border-b-0">

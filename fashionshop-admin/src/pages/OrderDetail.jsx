@@ -5,7 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { getOrder, updateOrderStatus } from "../api/orderApi";
 import { formatCurrency } from "../utils/formatCurrency";
-import { ORDER_STATUS, IMG_BASE } from "../utils/constants";
+import { ORDER_STATUS } from "../utils/constants";
+import { imageUrl } from "../utils/imageUrl";
 import { OrderBadge } from "../components/ui/StatusBadge";
 import Spinner from "../components/ui/Spinner";
 
@@ -71,7 +72,7 @@ export default function OrderDetail() {
         <div className="px-4 py-3 bg-gray-50 border-b font-semibold text-gray-700 text-sm">Sản Phẩm</div>
         {details.map((item) => {
           const img = item.product?.hinh_anh
-            ? `${IMG_BASE}${item.product.hinh_anh}`
+            ? imageUrl(item.product.hinh_anh)
             : "https://placehold.co/56x56?text=SP";
           return (
             <div key={item.id} className="flex items-center gap-4 px-4 py-3 border-b last:border-b-0">

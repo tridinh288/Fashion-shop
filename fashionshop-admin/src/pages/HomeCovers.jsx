@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Upload, Trash2, ImageOff, Move, RotateCcw } from "lucide-react";
 import toast from "react-hot-toast";
 import { getHomeCovers, updateHomeCovers, deleteHomeCover } from "../api/homeCoverApi";
-import { IMG_BASE } from "../utils/constants";
+import { imageUrl } from "../utils/imageUrl";
 import Spinner from "../components/ui/Spinner";
 
 const SLOTS = [
@@ -130,7 +130,7 @@ export default function HomeCovers() {
   });
 
   const srcOf = (key) =>
-    pending[key]?.preview || (covers[key]?.path ? `${IMG_BASE}${covers[key].path}` : null);
+    pending[key]?.preview || (covers[key]?.path ? imageUrl(covers[key].path) : null);
 
   const setEdit = (key, patch) =>
     setEdits((e) => ({ ...e, [key]: { ...settingOf(key), ...patch } }));

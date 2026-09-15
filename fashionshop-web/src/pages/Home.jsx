@@ -13,8 +13,7 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 import FabricCanvas from "../components/ui/FabricCanvas";
 import Reveal from "../components/ui/Reveal";
 import toast from "react-hot-toast";
-
-const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+import { imageUrl } from "../utils/imageUrl";
 
 const TABS = [
   { key: "featured", label: "Nổi bật" },
@@ -176,7 +175,7 @@ export default function Home() {
             {adminCover("hero") ? (
               <Link to="/category" className="group relative block h-full overflow-hidden">
                 <img
-                  src={`${IMG_BASE}${adminCover("hero").path}`}
+                  src={imageUrl(adminCover("hero").path)}
                   alt=""
                   aria-hidden="true"
                   className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04]"
@@ -193,7 +192,7 @@ export default function Home() {
                   className="group relative flex h-full items-center justify-center p-10"
                 >
                   <img
-                    src={`${IMG_BASE}${heroProduct.hinh_anh}`}
+                    src={imageUrl(heroProduct.hinh_anh)}
                     alt={heroProduct.ten_sp}
                     className="max-h-[85%] w-auto object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.16)] transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   />
@@ -220,7 +219,7 @@ export default function Home() {
                 tabIndex={i >= marquee.length ? -1 : 0}
               >
                 <img
-                  src={`${IMG_BASE}${p.hinh_anh}`}
+                  src={imageUrl(p.hinh_anh)}
                   alt={p.ten_sp}
                   loading="lazy"
                   className="h-full w-full object-contain p-2.5 transition-transform duration-500 group-hover:scale-105"
@@ -247,7 +246,7 @@ export default function Home() {
               >
                 {covers[c.gioiTinh] && (
                   <img
-                    src={`${IMG_BASE}${covers[c.gioiTinh]}`}
+                    src={imageUrl(covers[c.gioiTinh])}
                     alt=""
                     aria-hidden="true"
                     className={

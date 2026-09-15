@@ -11,8 +11,6 @@ export const CONTACT_STATUS = {
   resolved: { label: "Đã xử lý", color: "bg-green-100 text-green-700" },
 };
 
-export const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
-
 // Trạng thái được phép chuyển sang, phải khớp với Order::TRANSITIONS bên API.
 // Đơn đã hoàn thành hoặc đã huỷ là trạng thái cuối, không đổi được nữa.
 export const ORDER_TRANSITIONS = {

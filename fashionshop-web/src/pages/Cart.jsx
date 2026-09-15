@@ -7,8 +7,7 @@ import { getCart, updateCart, removeCartItem } from "../api/cartApi";
 import { formatCurrency } from "../utils/formatCurrency";
 import { SHIPPING_FEE } from "../utils/constants";
 import useCartStore from "../stores/cartStore";
-
-const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+import { imageUrl } from "../utils/imageUrl";
 
 
 
@@ -126,7 +125,7 @@ export default function Cart() {
 
               {items.map((item) => {
                 const img = item.product?.hinh_anh
-                  ? `${IMG_BASE}${item.product.hinh_anh}`
+                  ? imageUrl(item.product.hinh_anh)
                   : "https://placehold.co/80x80?text=SP";
                 return (
                   <div key={item.id} className="flex items-center gap-4 px-4 py-4 border-b last:border-b-0">

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { getProducts, createProduct, updateProduct, deleteProduct } from "../api/productApi";
 import { getCategories } from "../api/categoryApi";
 import { formatCurrency } from "../utils/formatCurrency";
-import { IMG_BASE } from "../utils/constants";
+import { imageUrl } from "../utils/imageUrl";
 import Spinner from "../components/ui/Spinner";
 import Pagination from "../components/ui/Pagination";
 
@@ -60,7 +60,7 @@ export default function Products() {
       gioi_tinh: String(p.gioi_tinh), category_id: p.category_id || "",
       hinh_anh: null,
     });
-    setPreview(p.hinh_anh ? `${IMG_BASE}${p.hinh_anh}` : null);
+    setPreview(p.hinh_anh ? imageUrl(p.hinh_anh) : null);
     setShowForm(true);
   };
 
@@ -158,7 +158,7 @@ export default function Products() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <img
-                        src={p.hinh_anh ? `${IMG_BASE}${p.hinh_anh}` : "https://placehold.co/40x40?text=SP"}
+                        src={p.hinh_anh ? imageUrl(p.hinh_anh) : "https://placehold.co/40x40?text=SP"}
                         alt={p.ten_sp}
                         className="w-10 h-10 object-cover rounded-lg border"
                       />

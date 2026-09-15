@@ -16,8 +16,7 @@ import { SIZES } from "../utils/constants";
 import StarRating from "../components/ui/StarRating";
 import SaleBadge from "../components/ui/SaleBadge";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-
-const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
+import { imageUrl } from "../utils/imageUrl";
 
 // API chặn mỗi lần thêm giỏ tối đa 50 sản phẩm, xem CartController.
 const MAX_PER_ADD = 50;
@@ -104,7 +103,7 @@ export default function ProductDetail() {
   if (!product) return <div className="text-center py-20 text-ink-faint">Không tìm thấy sản phẩm</div>;
 
   const imgSrc = product.hinh_anh
-    ? `${IMG_BASE}${product.hinh_anh}`
+    ? imageUrl(product.hinh_anh)
     : "https://placehold.co/500x600?text=No+Image";
 
   return (
