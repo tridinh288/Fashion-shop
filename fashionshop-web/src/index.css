@@ -122,6 +122,20 @@
   animation-play-state: paused;
 }
 
+/* Nút thêm giỏ trên thẻ SP: thiết bị có chuột thì hiện khi rê/focus,
+   màn hình cảm ứng thì luôn hiện. Opacity 0 vẫn được Playwright coi là nhìn thấy. */
+@media (hover: hover) {
+  .group .add-to-cart {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .group:hover .add-to-cart,
+  .add-to-cart:focus-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee-track { animation: none; }

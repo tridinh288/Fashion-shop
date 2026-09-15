@@ -37,7 +37,7 @@ Scenario('Trang category hiển thị danh sách sản phẩm', async ({ I }) =>
 Scenario('Product card có nút thêm giỏ', async ({ I }) => {
   I.amOnPage('/category');
   I.wait(5);
-  I.see('Thêm Giỏ');
+  I.see('Thêm vào giỏ');
   I.seeElement('[data-testid="product-item"]');
 });
 
