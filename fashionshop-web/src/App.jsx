@@ -51,10 +51,9 @@ export default function App() {
         <Toaster position="top-right" toastOptions={{
             duration: 3000,
             style: {
-              background: "#18181b",
-              color: "#fafafa",
-              border: "1px solid #27272a",
-              borderRadius: "10px",
+              background: "#141414",
+              color: "#ffffff",
+              borderRadius: "0",
               fontSize: "14px",
             },
           }} />
