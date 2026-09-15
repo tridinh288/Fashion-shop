@@ -108,20 +108,6 @@
   transform: scaleX(1);
 }
 
-/* Dải ảnh chạy ngang — Trang chủ cũ còn dùng, xoá ở Task 5 */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 45s linear infinite;
-}
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
 /* Nút thêm giỏ trên thẻ SP: thiết bị có chuột thì hiện khi rê/focus,
    màn hình cảm ứng thì luôn hiện. Opacity 0 vẫn được Playwright coi là nhìn thấy. */
 @media (hover: hover) {
@@ -138,7 +124,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .marquee-track { animation: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
