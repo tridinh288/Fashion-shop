@@ -2,7 +2,6 @@
 
 namespace App\Support;
 
-use App\Models\Upload;
 use App\Support\Images\ImageStorage;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -14,9 +13,6 @@ use Illuminate\Validation\ValidationException;
  * Ảnh được thu nhỏ cho vừa trần dung lượng rồi giao cho kho ảnh đang cấu hình
  * (xem App\Support\Images). Database chỉ giữ giá trị kho trả về: đường dẫn
  * tương đối như "products/abc.png" hoặc URL đầy đủ của Cloudinary.
- *
- * Bảng uploads chỉ còn được đọc cho những ảnh cũ chưa chuyển đi, xem lệnh
- * uploads:to-cloudinary.
  */
 class UploadStore
 {
@@ -73,7 +69,6 @@ class UploadStore
             return;
         }
 
-        Upload::where('path', $ref)->delete();
         Storage::disk('public')->delete($ref);
     }
 
@@ -85,7 +80,7 @@ class UploadStore
 
     /**
      * Lọc ra những ảnh còn xem được. URL của kho ngoài được coi là còn; đường
-     * dẫn thì phải còn trên đĩa hoặc còn trong bảng uploads cũ.
+     * dẫn tương đối thì phải còn trên đĩa.
      *
      * @param  list<string|null>  $refs
      * @return list<string>
@@ -94,22 +89,10 @@ class UploadStore
     {
         $refs = array_values(array_unique(array_filter($refs)));
 
-        $found = array_values(array_filter($refs, [self::class, 'isUrl']));
-        $paths = array_values(array_diff($refs, $found));
-
-        if (! $paths) {
-            return $found;
-        }
-
-        $trong_db = Upload::whereIn('path', $paths)->pluck('path')->all();
-
-        foreach ($paths as $path) {
-            if (in_array($path, $trong_db, true) || Storage::disk('public')->exists($path)) {
-                $found[] = $path;
-            }
-        }
-
-        return $found;
+        return array_values(array_filter(
+            $refs,
+            fn (string $ref) => self::isUrl($ref) || Storage::disk('public')->exists($ref)
+        ));
     }
 
     /**

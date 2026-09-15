@@ -1,6 +1,6 @@
 FROM php:8.3-cli-alpine
 
-# GD để thu nhỏ ảnh tải lên trước khi cất vào database, xem App\Support\UploadStore
+# GD để thu nhỏ ảnh tải lên trước khi đẩy lên kho ảnh, xem App\Support\UploadStore
 RUN apk add --no-cache git zip unzip curl ca-certificates libpng libjpeg-turbo freetype libwebp \
     && apk add --no-cache --virtual .build-deps libpng-dev libjpeg-turbo-dev freetype-dev libwebp-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \

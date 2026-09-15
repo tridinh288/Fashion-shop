@@ -177,14 +177,14 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
   </picture>
 </p>
 
-> Bản tương tác với 3 guided view (shopper request path, admin request path, durable uploads): mở [`docs/architecture/runtime-architecture.html`](docs/architecture/runtime-architecture.html) bằng trình duyệt.
+> Bản tương tác với 3 guided view (shopper request path, admin request path, image storage): mở [`docs/architecture/runtime-architecture.html`](docs/architecture/runtime-architecture.html) bằng trình duyệt.
 
 **Luồng chạy trên production:**
 - `fashionshop-web` và `fashionshop-admin` là hai bản build Vite deploy dạng Render Static Site, nhận API base URL qua `VITE_API_URL` lúc build
 - Mọi request tới Laravel 11 API (`/api/v1`) đều kèm Bearer token; nhóm route admin đi qua thêm `auth:sanctum` và middleware `IsAdmin`
 - API kết nối TiDB Serverless (MySQL-compatible) qua TLS bằng Eloquent
-- Ảnh upload được lưu trong bảng `uploads`; route `GET /storage/{path}` chỉ chạy khi file không còn trên đĩa — khi đó `UploadController` đọc từ DB và ghi cache lại xuống đĩa container
-- `docker-entrypoint` chạy `migrate`, seed khi DB còn rỗng và `uploads:restore` mỗi lần container khởi động
+- Ảnh admin tải lên được đẩy lên Cloudinary; database chỉ lưu URL. Ảnh sản phẩm mẫu nằm sẵn trong image Docker và được phục vụ qua `/storage/...`
+- `docker-entrypoint` chạy `migrate` và seed khi DB còn rỗng mỗi lần container khởi động
 
 **Luồng xác thực:**
 1. Client gửi `POST /api/v1/login` với email + password
@@ -391,6 +391,10 @@ DB_USERNAME=root
 DB_PASSWORD=
 
 FILESYSTEM_DISK=local
+
+IMAGE_DRIVER=cloudinary          # hoặc local để chạy offline (ảnh ghi ra storage/app/public)
+CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+CLOUDINARY_FOLDER=fashionshop-dev
 ```
 
 > `APP_URL` phải khớp với địa chỉ thực tế của API. Nếu dùng `php artisan serve` → `http://127.0.0.1:8000`.
@@ -889,6 +893,7 @@ Toàn bộ hệ thống được deploy **miễn phí** và chạy 24/7, độc 
 | Storefront | Render — Static Site | Build Vite → phục vụ qua CDN, luôn bật |
 | Admin | Render — Static Site | Build Vite → phục vụ qua CDN, luôn bật |
 | Database | TiDB Cloud — Serverless (tương thích MySQL) | Kết nối bắt buộc SSL/TLS |
+| Ảnh tải lên | Cloudinary | Database chỉ lưu URL; thư mục `fashionshop-prod` |
 
 **Điểm cấu hình khi deploy:**
 
@@ -896,7 +901,7 @@ Toàn bộ hệ thống được deploy **miễn phí** và chạy 24/7, độc 
 - API kết nối DB qua các biến `DB_*` và `MYSQL_ATTR_SSL_CA` (trỏ tới kho chứng chỉ hệ thống `/etc/ssl/certs/ca-certificates.crt` trong image).
 - Entrypoint tự chạy `migrate`, và tự `db:seed` khi bảng `products` còn rỗng — nên trỏ API sang một database mới là nó tự nạp đủ danh mục, sản phẩm và đơn hàng mẫu.
 - Đặt `DB_CONNECTION=sqlite` sẽ chạy demo bằng SQLite ngay trong container, không cần database ngoài (dữ liệu sẽ mất khi container khởi động lại).
-- Ảnh quản trị viên tải lên (ảnh trang chủ, ảnh sản phẩm) được lưu **trong database** chứ không chỉ trên ổ đĩa: ổ đĩa của container là tạm, mỗi lần Render dựng lại là sạch. Entrypoint chạy `php artisan uploads:restore` lúc khởi động để ghi chúng ra đĩa trở lại. Ảnh trên 2000px được thu nhỏ trước khi lưu, giữ nguyên định dạng để không làm hỏng nền trong suốt của ảnh tách nền.
+- Ảnh quản trị viên tải lên (ảnh trang chủ, ảnh sản phẩm) được đẩy lên **Cloudinary**, database chỉ giữ URL — ổ đĩa của container là tạm nên không cất ảnh ở đó. Đặt `IMAGE_DRIVER=cloudinary`, `CLOUDINARY_URL` và `CLOUDINARY_FOLDER` trong Environment của Render. Ảnh trên 2000px được thu nhỏ trước khi tải lên, giữ nguyên định dạng để không làm hỏng nền trong suốt của ảnh tách nền.
 - `config/cors.php` mở CORS cho request cross-origin từ frontend.
 - Static Site cấu hình rewrite `/* → /index.html` để React Router hoạt động khi reload trang con.
 - Container bind cổng động qua `${PORT}` do Render cấp.

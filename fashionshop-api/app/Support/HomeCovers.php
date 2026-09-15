@@ -57,7 +57,7 @@ class HomeCovers
             ];
         }
 
-        // Ảnh tải lên trước khi có bảng uploads chỉ tồn tại trên ổ đĩa tạm của
+        // Ảnh tải lên trước khi có kho ảnh ngoài chỉ nằm trên ổ đĩa tạm của
         // máy chủ, khởi động lại là mất. Bỏ qua những đường dẫn đã hỏng để
         // trang chủ quay về dùng ảnh sản phẩm thay vì hiện ô ảnh vỡ.
         $con_song = UploadStore::existing(array_column($out, 'path'));

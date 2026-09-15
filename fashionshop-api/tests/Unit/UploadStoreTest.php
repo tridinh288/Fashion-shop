@@ -73,6 +73,19 @@ class UploadStoreTest extends TestCase
         );
     }
 
+    public function test_uploads_table_is_gone(): void
+    {
+        $this->assertFalse(\Illuminate\Support\Facades\Schema::hasTable('uploads'));
+    }
+
+    public function test_storage_route_no_longer_serves_from_database(): void
+    {
+        // storage/{path} vẫn còn route storage.local có sẵn của Laravel (cần URL có chữ ký), nên kiểm theo tên
+        $ten = collect(\Illuminate\Support\Facades\Route::getRoutes()->getRoutes())->map->getName();
+
+        $this->assertNotContains('uploads.show', $ten);
+    }
+
     public function test_unknown_driver_fails_loudly(): void
     {
         config(['services.images.driver' => 'cloudinray']);
