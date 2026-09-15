@@ -21,7 +21,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    // Sai mật khẩu ở /login cũng trả 401: để trang đăng nhập tự báo lỗi,
+    // không tải lại trang (tải lại sẽ xoá mất thông báo)
+    const isLoginRequest = error.config?.url === "/login";
+    if (error.response?.status === 401 && !isLoginRequest) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       window.location.href = "/login";
