@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "FashionShop Runtime Architecture",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "shopping-path", "label": "Shopper request path", "focus": ["shopper", "web", "api", "auth", "db"], "note": "A storefront call carries the user Bearer token to /api/v1 and lands in TiDB." },
+      { "id": "admin-path", "label": "Admin request path", "focus": ["operator", "admin", "api", "auth", "db"], "note": "Admin calls hit /api/v1/admin, guarded by auth:sanctum plus the IsAdmin middleware." },
+      { "id": "uploads", "label": "Durable uploads", "focus": ["web", "uploads", "disk", "db", "boot"], "note": "Images live in the uploads table; disk is a cache rebuilt at boot or on first view." }
+    ]
+  },
+  "components": [
+    { "id": "shopper", "type": "external", "label": "Shoppers", "sublabel": "Browser", "pos": [40, 190], "size": [130, 60] },
+    { "id": "operator", "type": "external", "label": "Admins", "sublabel": "Browser", "pos": [40, 440], "size": [130, 60] },
+    { "id": "web", "type": "frontend", "label": "fashionshop-web", "sublabel": "React 19 · Static Site", "pos": [250, 188], "size": [170, 64] },
+    { "id": "admin", "type": "frontend", "label": "fashionshop-admin", "sublabel": "React 19 · Static Site", "pos": [250, 438], "size": [170, 64] },
+    { "id": "auth", "type": "security", "label": "Sanctum + IsAdmin", "sublabel": "auth:sanctum", "pos": [540, 480], "size": [170, 64], "tag": "Bearer token" },
+    { "id": "api", "type": "backend", "label": "Laravel 11 API", "sublabel": "/api/v1 · PHP 8.3", "pos": [540, 312], "size": [170, 64] },
+    { "id": "uploads", "type": "backend", "label": "UploadController", "sublabel": "GET /storage/{path}", "pos": [540, 60], "size": [170, 64] },
+    { "id": "boot", "type": "backend", "label": "docker-entrypoint", "sublabel": "migrate · seed · restore", "pos": [800, 480], "size": [170, 64] },
+    { "id": "db", "type": "database", "label": "TiDB Serverless", "sublabel": "MySQL-compatible", "pos": [1060, 312], "size": [170, 64], "tag": "TLS required" },
+    { "id": "disk", "type": "cloud", "label": "Container disk", "sublabel": "storage/app/public", "pos": [800, 60], "size": [170, 64], "tag": "ephemeral" }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Render Web Service · Docker", "wraps": ["auth", "api", "uploads", "boot", "disk"] },
+    { "kind": "region", "label": "TiDB Cloud", "wraps": ["db"] }
+  ],
+  "connections": [
+    { "id": "shopper-web", "from": "shopper", "to": "web", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "operator-admin", "from": "operator", "to": "admin", "label": "HTTPS" },
+    { "id": "web-api", "from": "web", "to": "api", "label": "REST · Bearer", "variant": "emphasis" },
+    { "id": "admin-api", "from": "admin", "to": "api", "label": "REST /admin · Bearer" },
+    { "id": "api-auth", "from": "api", "to": "auth", "label": "verify token", "variant": "security", "labelDy": 24 },
+    { "id": "api-db", "from": "api", "to": "db", "label": "Eloquent SQL", "variant": "emphasis" },
+    { "id": "web-uploads", "from": "web", "to": "uploads", "label": "img src", "variant": "dashed", "fromSide": "top", "toSide": "left" },
+    { "id": "uploads-disk", "from": "uploads", "to": "disk", "label": "rewrite cache" },
+    { "id": "boot-db", "from": "boot", "to": "db", "label": "migrate · seed", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Clients", "items": ["Two Vite builds served as Render Static Sites", "API base URL injected at build time via VITE_API_URL", "Tokens kept in localStorage; 401 forces logout"] },
+    { "dot": "emerald", "title": "API container", "items": ["php artisan serve on Render's ${PORT}", "Public, auth:sanctum, and admin route groups under /api/v1", "Entrypoint runs migrate, seeds empty DB, restores uploads"] },
+    { "dot": "amber", "title": "State", "items": ["TiDB Serverless over TLS is the source of truth", "Uploaded images stored in the uploads table", "Container disk is only a rebuildable image cache"] }
+  ]
+}
