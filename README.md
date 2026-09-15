@@ -170,25 +170,21 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
 
 ## 4. Kiến trúc hệ thống
 
-```
-┌──────────────────────────┐     ┌──────────────────────────┐
-│   fashionshop-web        │     │   fashionshop-admin       │
-│   React (Storefront)     │     │   React (Dashboard)       │
-│   :5173                  │     │   :5174                   │
-└─────────────┬────────────┘     └────────────┬─────────────┘
-              │  HTTP + Bearer Token           │
-              └──────────────┬─────────────────┘
-                             │
-              ┌──────────────▼─────────────────┐
-              │        fashionshop-api          │
-              │   Laravel 11 REST API :8000     │
-              │   /api/v1/...                   │
-              └──────────────┬─────────────────┘
-                             │
-              ┌──────────────▼─────────────────┐
-              │            MySQL 8              │
-              └─────────────────────────────────┘
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/runtime-architecture.dark.png">
+    <img src="docs/architecture/runtime-architecture.light.png" width="100%" alt="FashionShop runtime architecture" />
+  </picture>
+</p>
+
+> Bản tương tác với 3 guided view (shopper request path, admin request path, durable uploads): mở [`docs/architecture/runtime-architecture.html`](docs/architecture/runtime-architecture.html) bằng trình duyệt.
+
+**Luồng chạy trên production:**
+- `fashionshop-web` và `fashionshop-admin` là hai bản build Vite deploy dạng Render Static Site, nhận API base URL qua `VITE_API_URL` lúc build
+- Mọi request tới Laravel 11 API (`/api/v1`) đều kèm Bearer token; nhóm route admin đi qua thêm `auth:sanctum` và middleware `IsAdmin`
+- API kết nối TiDB Serverless (MySQL-compatible) qua TLS bằng Eloquent
+- Ảnh upload được lưu trong bảng `uploads`; route `GET /storage/{path}` chỉ chạy khi file không còn trên đĩa — khi đó `UploadController` đọc từ DB và ghi cache lại xuống đĩa container
+- `docker-entrypoint` chạy `migrate`, seed khi DB còn rỗng và `uploads:restore` mỗi lần container khởi động
 
 **Luồng xác thực:**
 1. Client gửi `POST /api/v1/login` với email + password
