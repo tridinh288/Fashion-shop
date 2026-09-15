@@ -55,8 +55,8 @@ export default function Checkout() {
 
   // Cart: direct array
   const items = cartData?.data?.data || [];
-  // Addresses: direct array
-  const addresses = addrData?.data || [];
+  // Addresses: API trả { message, total, data: [...] }
+  const addresses = addrData?.data?.data || [];
 
   const subtotal = items.reduce((s, i) => s + (i.product?.gia || 0) * i.quantity, 0);
   const total = subtotal + SHIPPING_FEE;

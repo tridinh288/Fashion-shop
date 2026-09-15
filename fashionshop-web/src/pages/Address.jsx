@@ -37,7 +37,8 @@ export default function Address() {
     queryFn: getAddresses,
   });
 
-  const addresses = data?.data || [];
+  // API trả { message, total, data: [...] }
+  const addresses = data?.data?.data || [];
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
@@ -132,7 +133,8 @@ export default function Address() {
                     <p className="font-medium text-ink">{addr.fullname}</p>
                     <p className="mt-0.5 text-sm text-ink-soft">{addr.phone}</p>
                   </div>
-                  {addr.is_default && <span className="eyebrow mt-1">Mặc định</span>}
+                  {/* is_default là số 0/1 — dùng ?: để React không in ra số 0 */}
+                  {addr.is_default ? <span className="eyebrow mt-1">Mặc định</span> : null}
                 </div>
                 <p className="mt-3 flex-1 text-sm text-ink-soft">{addr.address_details}</p>
                 <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3">

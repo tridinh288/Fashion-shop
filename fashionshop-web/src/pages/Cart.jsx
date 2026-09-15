@@ -132,7 +132,7 @@ export default function Cart() {
                 const name = item.product?.ten_sp;
                 const img = item.product?.hinh_anh ? imageUrl(item.product.hinh_anh) : PLACEHOLDER;
                 return (
-                  <li key={item.id} data-testid="cart-item" className="flex gap-4 py-6 sm:gap-6">
+                  <li key={item.id} data-testid="cart-item" className="flex gap-3 py-6 sm:gap-6">
                     <input
                       type="checkbox"
                       checked={selected.includes(item.id)}
@@ -161,7 +161,7 @@ export default function Cart() {
                         </p>
                       </div>
 
-                      <div className="flex items-center justify-between gap-4 sm:justify-end sm:gap-6">
+                      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 sm:flex-nowrap sm:justify-end sm:gap-6">
                         <div className="flex items-center border border-line">
                           <button
                             type="button"
@@ -182,7 +182,7 @@ export default function Cart() {
                             +
                           </button>
                         </div>
-                        <p className="min-w-24 text-right text-sm font-medium tabular-nums text-ink">
+                        <p className="text-right text-sm font-medium tabular-nums text-ink sm:min-w-24">
                           {formatCurrency((item.product?.gia || 0) * item.quantity)}
                         </p>
                         <button
