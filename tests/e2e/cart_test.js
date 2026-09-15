@@ -35,8 +35,8 @@ Scenario('Thêm sản phẩm vào giỏ từ trang chi tiết', async ({ I }) =>
   I.click(locate('a').inside('h3').first());
   await I.waitForURL('**/products/**', 8);
 
-  await I.waitForText('Thêm Vào Giỏ', 8);
-  I.click(locate('button').withText('Thêm Vào Giỏ').first());
+  await I.waitForText('Thêm vào giỏ', 8);
+  I.click(locate('button').withText('Thêm vào giỏ').first());
 
   await I.waitForText('Đã thêm vào giỏ hàng', 5);
 });
