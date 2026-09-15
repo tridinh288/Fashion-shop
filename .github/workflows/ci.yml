@@ -104,6 +104,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [api, admin, web] # Chỉ chạy khi cả 3 job trên pass
 
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -115,11 +118,13 @@ jobs:
           name: php-coverage
           path: fashionshop-api
 
-      - name: Install SonarScanner
-        run: npm install -g sonarqube-scanner
-
+      # Repo chưa có secret SONAR_TOKEN thì bỏ qua, đừng để CI đỏ vì chuyện đó
       - name: Run SonarCloud Scan
-        run: sonar-scanner
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
+
+      - name: Skipped
+        if: env.SONAR_TOKEN == ''
+        run: echo "Bỏ qua SonarCloud — chưa cấu hình secret SONAR_TOKEN."
