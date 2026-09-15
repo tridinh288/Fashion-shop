@@ -106,16 +106,16 @@ class BVADiaChiTest extends TestCase
         $this->postAddress(256, 10, 252)->assertStatus(422);
     }
 
-    /** TC11 — X3: phone=8 chữ số (dưới biên dưới) — PHP validate regex → 422, assert 201 → FAIL */
+    /** TC11 — X3: phone=8 chữ số (dưới biên dưới) */
     public function test_tc11_phone_thieu_chu_so_8(): void
     {
-        $this->postAddress(128, 8, 252)->assertStatus(201);
+        $this->postAddress(128, 8, 252)->assertStatus(422);
     }
 
-    /** TC12 — X4: phone=12 chữ số (trên biên trên) — PHP validate regex → 422, assert 201 → FAIL */
+    /** TC12 — X4: phone=12 chữ số (trên biên trên) */
     public function test_tc12_phone_du_chu_so_12(): void
     {
-        $this->postAddress(128, 12, 252)->assertStatus(201);
+        $this->postAddress(128, 12, 252)->assertStatus(422);
     }
 
     /** TC13 — X5: address_details=4 ký tự (dưới biên dưới) */
@@ -130,9 +130,9 @@ class BVADiaChiTest extends TestCase
         $this->postAddress(128, 10, 501)->assertStatus(422);
     }
 
-    /** TC15 — X1,X3,X5: fullname=1, phone=8, address=4 — PHP validate phone → 422, assert 201 → FAIL */
+    /** TC15 — X1,X3,X5: fullname=1, phone=8, address=4 */
     public function test_tc15_nhieu_bien_sai_dong_thoi(): void
     {
-        $this->postAddress(1, 8, 4)->assertStatus(201);
+        $this->postAddress(1, 8, 4)->assertStatus(422);
     }
 }

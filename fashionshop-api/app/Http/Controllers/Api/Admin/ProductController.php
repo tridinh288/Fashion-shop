@@ -34,11 +34,11 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'ten_sp'      => 'required|string',
-            'gia'         => 'required|integer|min:0',
-            'gia_cu'      => 'nullable|integer|min:0',
+            'ten_sp'      => 'required|string|max:255',
+            'gia'         => 'required|integer|min:0|max:999999999',
+            'gia_cu'      => 'nullable|integer|min:0|max:999999999',
             'mo_ta'       => 'nullable|string',
-            'so_luong'    => 'required|integer|min:0',
+            'so_luong'    => 'required|integer|min:0|max:10000',
             'gioi_tinh'   => 'required|in:0,1',
             'category_id' => 'nullable|exists:categories,id',
             'hinh_anh'    => 'nullable|image|mimes:jpg,jpeg,png,webp',
@@ -70,11 +70,11 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $request->validate([
-            'ten_sp'      => 'required|string',
-            'gia'         => 'required|integer|min:0',
-            'gia_cu'      => 'nullable|integer|min:0',
+            'ten_sp'      => 'required|string|max:255',
+            'gia'         => 'required|integer|min:0|max:999999999',
+            'gia_cu'      => 'nullable|integer|min:0|max:999999999',
             'mo_ta'       => 'nullable|string',
-            'so_luong'    => 'required|integer|min:0',
+            'so_luong'    => 'required|integer|min:0|max:10000',
             'gioi_tinh'   => 'required|in:0,1',
             'category_id' => 'nullable|exists:categories,id',
             'hinh_anh'    => 'nullable|image|mimes:jpg,jpeg,png,webp',

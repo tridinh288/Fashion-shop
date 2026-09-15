@@ -24,9 +24,9 @@ class UserAddressController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'fullname'        => 'required|string',
+            'fullname'        => 'required|string|min:2|max:255',
             'phone'           => 'required|regex:/^[0-9]{9,11}$/',
-            'address_details' => 'required|string',
+            'address_details' => 'required|string|min:5|max:500',
         ]);
 
          if ($request->is_default) {

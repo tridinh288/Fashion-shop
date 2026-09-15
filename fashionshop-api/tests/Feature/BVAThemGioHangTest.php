@@ -118,43 +118,43 @@ class BVAThemGioHangTest extends TestCase
     // TestKhongHopLe — TC09-TC15
     // =====================================================================
 
-    /** TC09 — X1: quantity=0 (dưới biên dưới) — PHP min:1 → errors, assert isCartSuccess → FAIL */
+    /** TC09 — X1: quantity=0 (dưới biên dưới) */
     public function test_tc09_quantity_bang_0_duoi_bien_duoi(): void
     {
-        $this->assertTrue($this->isCartSuccess($this->addToCart(0, 'M')));
+        $this->assertTrue($this->isCartError($this->addToCart(0, 'M')));
     }
 
-    /** TC10 — X1: quantity=-1 (số âm) — PHP min:1 → errors, assert isCartSuccess → FAIL */
+    /** TC10 — X1: quantity=-1 (số âm) */
     public function test_tc10_quantity_am_1(): void
     {
-        $this->assertTrue($this->isCartSuccess($this->addToCart(-1, 'M')));
+        $this->assertTrue($this->isCartError($this->addToCart(-1, 'M')));
     }
 
-    /** TC11 — X2: quantity=51 (vượt tồn kho 50) — PHP không có max → chấp nhận, assert isCartError → FAIL */
+    /** TC11 — X2: quantity=51 (vượt tồn kho 50) */
     public function test_tc11_quantity_51_vuot_ton_kho(): void
     {
         $this->assertTrue($this->isCartError($this->addToCart(51, 'M')));
     }
 
-    /** TC12 — X3: size="XXL" (không tồn tại) — PHP in:S,M,L,XL → errors, assert isCartSuccess → FAIL */
+    /** TC12 — X3: size="XXL" (không tồn tại) */
     public function test_tc12_size_XXL_khong_hop_le(): void
     {
-        $this->assertTrue($this->isCartSuccess($this->addToCart(25, 'XXL')));
+        $this->assertTrue($this->isCartError($this->addToCart(25, 'XXL')));
     }
 
-    /** TC13 — X3: size="A" (không hợp lệ) — PHP in: → errors, assert isCartSuccess → FAIL */
+    /** TC13 — X3: size="A" (không hợp lệ) */
     public function test_tc13_size_A_khong_hop_le(): void
     {
-        $this->assertTrue($this->isCartSuccess($this->addToCart(25, 'A')));
+        $this->assertTrue($this->isCartError($this->addToCart(25, 'A')));
     }
 
-    /** TC14 — X1,X3: quantity=0, size="XXL" — PHP → errors, assert isCartSuccess → FAIL */
+    /** TC14 — X1,X3: quantity=0, size="XXL" */
     public function test_tc14_quantity_va_size_deu_sai(): void
     {
-        $this->assertTrue($this->isCartSuccess($this->addToCart(0, 'XXL')));
+        $this->assertTrue($this->isCartError($this->addToCart(0, 'XXL')));
     }
 
-    /** TC15 — X2: quantity=51, size=L — PHP không có max → chấp nhận, assert isCartError → FAIL */
+    /** TC15 — X2: quantity=51, size=L */
     public function test_tc15_quantity_vuot_max_size_hop_le(): void
     {
         $this->assertTrue($this->isCartError($this->addToCart(51, 'L')));

@@ -12,11 +12,11 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'fullname' => 'required|string|max:255',
+            'fullname' => 'required|string|min:2|max:255',
             'email'    => 'required|email|unique:users,email',
             'phone'    => 'required|regex:/^[0-9]{9,11}$/',
             'gender'   => 'required|in:Nam,Nữ',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|max:50|confirmed',
         ]);
 
         $user = User::create([

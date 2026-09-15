@@ -140,18 +140,18 @@ class BVADatHangTest extends TestCase
         $this->placeOrder(256, 10, 252)->assertStatus(422);
     }
 
-    /** TC11 — X3: phone=8 chữ số (dưới biên dưới) — PHP validate regex → 422, assert 200 → FAIL */
+    /** TC11 — X3: phone=8 chữ số (dưới biên dưới) */
     public function test_tc11_phone_thieu_chu_so_8(): void
     {
         $this->addToCart(1);
-        $this->placeOrder(128, 8, 252)->assertStatus(200);
+        $this->placeOrder(128, 8, 252)->assertStatus(422);
     }
 
-    /** TC12 — X4: phone=12 chữ số (trên biên trên) — PHP validate regex → 422, assert 200 → FAIL */
+    /** TC12 — X4: phone=12 chữ số (trên biên trên) */
     public function test_tc12_phone_du_chu_so_12(): void
     {
         $this->addToCart(1);
-        $this->placeOrder(128, 12, 252)->assertStatus(200);
+        $this->placeOrder(128, 12, 252)->assertStatus(422);
     }
 
     /** TC13 — X5: address=4 ký tự (dưới biên dưới) */
@@ -161,14 +161,14 @@ class BVADatHangTest extends TestCase
         $this->placeOrder(128, 10, 4)->assertStatus(422);
     }
 
-    /** TC14 — X7: quantity=0 → giỏ hàng từ chối → giỏ rỗng — PHP→400, assert 200 → FAIL */
+    /** TC14 — X7: quantity=0 → giỏ hàng từ chối → giỏ rỗng */
     public function test_tc14_quantity_bang_0_khong_dat_san_pham(): void
     {
         $cartResp = $this->addToCart(0);
         // PHP có min:1 → trả errors (đúng theo spec)
         $this->assertArrayHasKey('errors', $cartResp->json());
-        // Giỏ rỗng → PHP trả 400, assert 200 → FAIL
-        $this->placeOrder(128, 10, 252)->assertStatus(200);
+        // Giỏ rỗng → API trả 400
+        $this->placeOrder(128, 10, 252)->assertStatus(400);
     }
 
     /** TC15 — X8: quantity=101 (vượt tồn kho 100) → giỏ hàng phải từ chối */
@@ -178,10 +178,10 @@ class BVADatHangTest extends TestCase
         $this->assertArrayHasKey('errors', $cartResp->json());
     }
 
-    /** TC16 — X1,X3,X5,X7: fullname=1, phone=8, address=4, qty=0 — PHP validate phone → 422, assert 200 → FAIL */
+    /** TC16 — X1,X3,X5,X7: fullname=1, phone=8, address=4, qty=0 */
     public function test_tc16_nhieu_bien_sai_dong_thoi(): void
     {
         $this->addToCart(0); // quantity=0 bị từ chối, giỏ rỗng
-        $this->placeOrder(1, 8, 4)->assertStatus(200);
+        $this->placeOrder(1, 8, 4)->assertStatus(422);
     }
 }

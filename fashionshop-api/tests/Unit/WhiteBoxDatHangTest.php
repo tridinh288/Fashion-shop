@@ -83,7 +83,7 @@ class WhiteBoxDatHangTest extends TestCase
         $request = $this->makeRequest($user, [
             'fullname' => 'Nguyen Van A',
             'phone'    => '0912345678',
-            'address'  => 'HCM',
+            'address'  => 'Quan 1, HCM',
             'payment'  => 'COD'
         ]);
 

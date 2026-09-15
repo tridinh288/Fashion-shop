@@ -109,10 +109,10 @@ class BVAQuanLySanPhamTest extends TestCase
     // TestKhongHopLe — TC09-TC15
     // =====================================================================
 
-    /** TC09 — X1: ten_sp rỗng — PHP required → 422, assert 201 → FAIL */
+    /** TC09 — X1: ten_sp rỗng */
     public function test_tc09_ten_sp_rong_0_ky_tu(): void
     {
-        $this->createProduct(0, 500_000_000, 5000)->assertStatus(201);
+        $this->createProduct(0, 500_000_000, 5000)->assertStatus(422);
     }
 
     /** TC10 — X2: ten_sp=256 ký tự (trên biên trên) */
@@ -121,10 +121,10 @@ class BVAQuanLySanPhamTest extends TestCase
         $this->createProduct(256, 500_000_000, 5000)->assertStatus(422);
     }
 
-    /** TC11 — X3: gia=-1 (âm) — PHP min:0 → 422, assert 201 → FAIL */
+    /** TC11 — X3: gia=-1 (âm) */
     public function test_tc11_gia_am_1(): void
     {
-        $this->createProduct(128, -1, 5000)->assertStatus(201);
+        $this->createProduct(128, -1, 5000)->assertStatus(422);
     }
 
     /** TC12 — X4: gia=1000000000 (vượt giới hạn 999999999) */
@@ -133,10 +133,10 @@ class BVAQuanLySanPhamTest extends TestCase
         $this->createProduct(128, 1_000_000_000, 5000)->assertStatus(422);
     }
 
-    /** TC13 — X5: so_luong=-1 (âm) — PHP min:0 → 422, assert 201 → FAIL */
+    /** TC13 — X5: so_luong=-1 (âm) */
     public function test_tc13_so_luong_am_1(): void
     {
-        $this->createProduct(128, 500_000_000, -1)->assertStatus(201);
+        $this->createProduct(128, 500_000_000, -1)->assertStatus(422);
     }
 
     /** TC14 — X6: so_luong=10001 (vượt giới hạn 10000) */
@@ -145,9 +145,9 @@ class BVAQuanLySanPhamTest extends TestCase
         $this->createProduct(128, 500_000_000, 10001)->assertStatus(422);
     }
 
-    /** TC15 — X1,X3,X5: ten_sp rỗng, gia=-1, so_luong=-1 — PHP → 422, assert 201 → FAIL */
+    /** TC15 — X1,X3,X5: ten_sp rỗng, gia=-1, so_luong=-1 */
     public function test_tc15_tat_ca_bien_sai_dong_thoi(): void
     {
-        $this->createProduct(0, -1, -1)->assertStatus(201);
+        $this->createProduct(0, -1, -1)->assertStatus(422);
     }
 }

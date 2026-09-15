@@ -96,10 +96,10 @@ class BVALienHeTest extends TestCase
         $this->postContact(128, 9)->assertStatus(422);
     }
 
-    /** TC12 — X3: message=0 ký tự (rỗng) — PHP required → 422, assert 201 → FAIL */
+    /** TC12 — X3: message=0 ký tự (rỗng) */
     public function test_tc12_message_rong_0_ky_tu(): void
     {
-        $this->postContact(128, 0)->assertStatus(201);
+        $this->postContact(128, 0)->assertStatus(422);
     }
 
     /** TC13 — X4: message=1001 ký tự (trên biên trên) */

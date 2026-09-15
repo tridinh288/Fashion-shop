@@ -103,28 +103,28 @@ class BVADoiMatKhauTest extends TestCase
     // TestKhongHopLe — TC09-TC15
     // =====================================================================
 
-    /** TC09 — X1: old_password rỗng — PHP required → 422, assert 200 → FAIL */
+    /** TC09 — X1: old_password rỗng */
     public function test_tc09_old_password_rong_0_ky_tu(): void
     {
-        $this->changePassword('', str_repeat('a', 28))->assertStatus(200);
+        $this->changePassword('', str_repeat('a', 28))->assertStatus(422);
     }
 
-    /** TC10 — X2: old_password=51 ký tự sai — PHP Hash::check fails → 400, assert 200 → FAIL */
+    /** TC10 — X2: old_password=51 ký tự sai */
     public function test_tc10_old_password_sai_51_ky_tu(): void
     {
-        $this->changePassword(str_repeat('a', 51), str_repeat('a', 28))->assertStatus(200);
+        $this->changePassword(str_repeat('a', 51), str_repeat('a', 28))->assertStatus(400);
     }
 
-    /** TC11 — X3: new_password=5 ký tự — PHP min:6 → 422, assert 200 → FAIL */
+    /** TC11 — X3: new_password=5 ký tự */
     public function test_tc11_new_password_qua_ngan_5_ky_tu(): void
     {
-        $this->changePassword(self::PASSWORD, str_repeat('a', 5))->assertStatus(200);
+        $this->changePassword(self::PASSWORD, str_repeat('a', 5))->assertStatus(422);
     }
 
-    /** TC12 — X3: new_password=1 ký tự — PHP min:6 → 422, assert 200 → FAIL */
+    /** TC12 — X3: new_password=1 ký tự */
     public function test_tc12_new_password_bang_1_ky_tu(): void
     {
-        $this->changePassword(self::PASSWORD, str_repeat('a', 1))->assertStatus(200);
+        $this->changePassword(self::PASSWORD, str_repeat('a', 1))->assertStatus(422);
     }
 
     /** TC13 — X4: new_password=51 ký tự (trên biên trên) */
@@ -133,10 +133,10 @@ class BVADoiMatKhauTest extends TestCase
         $this->changePassword(self::PASSWORD, str_repeat('a', 51))->assertStatus(422);
     }
 
-    /** TC14 — X1,X3: old_password rỗng, new_password=5 — PHP → 422, assert 200 → FAIL */
+    /** TC14 — X1,X3: old_password rỗng, new_password=5 */
     public function test_tc14_ca_hai_bien_sai_dong_thoi(): void
     {
-        $this->changePassword('', str_repeat('a', 5))->assertStatus(200);
+        $this->changePassword('', str_repeat('a', 5))->assertStatus(422);
     }
 
     /** TC15 — X4: old_password hợp lệ, new_password=51 ký tự (vượt max) */

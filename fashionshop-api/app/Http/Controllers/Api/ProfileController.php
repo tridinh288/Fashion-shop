@@ -44,7 +44,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'old_password'     => 'required',
-            'new_password'     => 'required|min:6|confirmed',
+            'new_password'     => 'required|min:6|max:50|confirmed',
         ]);
 
         if (!Hash::check($request->old_password, $request->user()->password)) {

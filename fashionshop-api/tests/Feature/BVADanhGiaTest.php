@@ -107,22 +107,22 @@ class BVADanhGiaTest extends TestCase
     // TestKhongHopLe — TC09-TC15
     // =====================================================================
 
-    /** TC09 — X1: rating=0 (dưới biên dưới) — PHP min:1 → 422, assert 201 → FAIL */
+    /** TC09 — X1: rating=0 (dưới biên dưới) */
     public function test_tc09_rating_bang_0_duoi_bien_duoi(): void
     {
-        $this->postReview(0, 252)->assertStatus(201);
+        $this->postReview(0, 252)->assertStatus(422);
     }
 
-    /** TC10 — X1: rating=-1 (âm) — PHP min:1 → 422, assert 201 → FAIL */
+    /** TC10 — X1: rating=-1 (âm) */
     public function test_tc10_rating_am_1(): void
     {
-        $this->postReview(-1, 252)->assertStatus(201);
+        $this->postReview(-1, 252)->assertStatus(422);
     }
 
-    /** TC11 — X2: rating=6 (trên biên trên) — PHP max:5 → 422, assert 201 → FAIL */
+    /** TC11 — X2: rating=6 (trên biên trên) */
     public function test_tc11_rating_bang_6_tren_bien_tren(): void
     {
-        $this->postReview(6, 252)->assertStatus(201);
+        $this->postReview(6, 252)->assertStatus(422);
     }
 
     /** TC12 — X3: comment=4 ký tự (dưới biên dưới) */
@@ -137,10 +137,10 @@ class BVADanhGiaTest extends TestCase
         $this->postReview(3, 501)->assertStatus(422);
     }
 
-    /** TC14 — X1,X3: rating=0, comment=4 ký tự — PHP validate rating → 422, assert 201 → FAIL */
+    /** TC14 — X1,X3: rating=0, comment=4 ký tự */
     public function test_tc14_ca_hai_bien_sai_dong_thoi(): void
     {
-        $this->postReview(0, 4)->assertStatus(201);
+        $this->postReview(0, 4)->assertStatus(422);
     }
 
     /** TC15 — X4: rating=5, comment=501 ký tự (chỉ comment vi phạm) */

@@ -72,7 +72,7 @@ Scenario('POST /products/:id/reviews - Lỗi 401 khi không có token', async ({
 
 Scenario('POST /products/:id/reviews - Lỗi 404 khi sản phẩm không tồn tại', async ({ I }) => {
   const res = await I.sendPostRequest('/products/999999/reviews',
-    { rating: 5, comment: 'Test' },
+    { rating: 5, comment: 'Test review' },
     { Authorization: `Bearer ${token}` }
   );
 
@@ -156,7 +156,7 @@ Scenario('POST /contacts - Lỗi 422 khi email không hợp lệ', async ({ I })
   const res = await I.sendPostRequest('/contacts', {
     fullname: 'Test',
     email: 'not-an-email',
-    message: 'Xin chao',
+    message: 'Xin chao shop nhe',
   });
 
   expect(res.status).to.equal(422);

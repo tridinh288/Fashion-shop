@@ -19,6 +19,9 @@ import LoadingSpinner from "../components/ui/LoadingSpinner";
 
 const IMG_BASE = `${import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"}/storage/`;
 
+// API chặn mỗi lần thêm giỏ tối đa 50 sản phẩm, xem CartController.
+const MAX_PER_ADD = 50;
+
 const reviewSchema = z.object({
   rating: z.coerce.number().min(1).max(5),
   comment: z.string().min(5, "Nhận xét ít nhất 5 ký tự"),
@@ -163,7 +166,7 @@ export default function ProductDetail() {
               >−</button>
               <span className="w-12 text-center font-semibold">{qty}</span>
               <button
-                onClick={() => setQty((q) => Math.min(product.so_luong, q + 1))}
+                onClick={() => setQty((q) => Math.min(product.so_luong, MAX_PER_ADD, q + 1))}
                 className="w-10 h-10 rounded-lg border flex items-center justify-center text-lg font-bold hover:bg-tile-warm"
               >+</button>
               <span className="text-sm text-ink-faint ml-2">Còn {product.so_luong} sản phẩm</span>

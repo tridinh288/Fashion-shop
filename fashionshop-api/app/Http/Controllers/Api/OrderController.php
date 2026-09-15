@@ -46,9 +46,9 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'fullname' => 'required|string',
+            'fullname' => 'required|string|min:2|max:255',
             'phone'    => 'required|regex:/^[0-9]{9,11}$/',
-            'address'  => 'required|string',
+            'address'  => 'required|string|min:5|max:500',
             'payment'  => 'required|in:COD',
         ]);
 

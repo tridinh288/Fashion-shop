@@ -88,28 +88,28 @@ class BVADangKyTest extends TestCase
         $this->register(1, 10, 28)->assertStatus(422);
     }
 
-    /** TC10 — X2: fullname=256 ký tự (trên biên trên) — PHP có max:255 → 422, assert 201 → FAIL */
+    /** TC10 — X2: fullname=256 ký tự (trên biên trên) */
     public function test_tc10_fullname_qua_dai_256_ky_tu(): void
     {
-        $this->register(256, 10, 28)->assertStatus(201);
+        $this->register(256, 10, 28)->assertStatus(422);
     }
 
-    /** TC11 — X3: phone=8 chữ số (dưới biên dưới) — PHP validate regex → 422, assert 201 → FAIL */
+    /** TC11 — X3: phone=8 chữ số (dưới biên dưới) */
     public function test_tc11_phone_thieu_chu_so_8(): void
     {
-        $this->register(128, 8, 28)->assertStatus(201);
+        $this->register(128, 8, 28)->assertStatus(422);
     }
 
-    /** TC12 — X4: phone=12 chữ số (trên biên trên) — PHP validate regex → 422, assert 201 → FAIL */
+    /** TC12 — X4: phone=12 chữ số (trên biên trên) */
     public function test_tc12_phone_du_chu_so_12(): void
     {
-        $this->register(128, 12, 28)->assertStatus(201);
+        $this->register(128, 12, 28)->assertStatus(422);
     }
 
-    /** TC13 — X5: password=5 ký tự (dưới biên dưới) — PHP có min:6 → 422, assert 201 → FAIL */
+    /** TC13 — X5: password=5 ký tự (dưới biên dưới) */
     public function test_tc13_password_qua_ngan_5_ky_tu(): void
     {
-        $this->register(128, 10, 5)->assertStatus(201);
+        $this->register(128, 10, 5)->assertStatus(422);
     }
 
     /** TC14 — X6: password=51 ký tự (trên biên trên) */
@@ -118,9 +118,9 @@ class BVADangKyTest extends TestCase
         $this->register(128, 10, 51)->assertStatus(422);
     }
 
-    /** TC15 — X1,X3,X5: fullname=1, phone=8, password=5 — PHP validate phone/password → 422, assert 201 → FAIL */
+    /** TC15 — X1,X3,X5: fullname=1, phone=8, password=5 */
     public function test_tc15_nhieu_bien_sai_dong_thoi(): void
     {
-        $this->register(1, 8, 5)->assertStatus(201);
+        $this->register(1, 8, 5)->assertStatus(422);
     }
 }
