@@ -34,7 +34,7 @@
     { "id": "admin-api", "from": "admin", "to": "api", "label": "REST /admin · Bearer" },
     { "id": "api-auth", "from": "api", "to": "auth", "label": "verify token", "variant": "security", "labelDy": 24 },
     { "id": "api-db", "from": "api", "to": "db", "label": "Eloquent SQL", "variant": "emphasis" },
-    { "id": "api-cdn", "from": "api", "to": "cdn", "label": "upload · destroy" },
+    { "id": "api-cdn", "from": "api", "to": "cdn", "label": "upload · destroy", "fromSide": "top", "toSide": "bottom" },
     { "id": "web-cdn", "from": "web", "to": "cdn", "label": "img src", "variant": "dashed", "fromSide": "top", "toSide": "top" },
     { "id": "boot-db", "from": "boot", "to": "db", "label": "migrate · seed", "variant": "dashed" }
   ],
