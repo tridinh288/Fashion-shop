@@ -37,3 +37,6 @@ fix-images.cmd
 
 # archify visual-check output (local only)
 docs/architecture/*.visual-check.*
+
+# mockup brainstorm (local only)
+.superpowers/brainstorm/
