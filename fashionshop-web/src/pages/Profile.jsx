@@ -5,6 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { updateProfile, changePassword } from "../api/profileApi";
 import useAuthStore from "../stores/authStore";
+import AccountNav from "../components/layout/AccountNav";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
+import Field from "../components/ui/Field";
+import { INPUT_CLASS } from "../components/ui/fieldStyles";
+import SectionHeading from "../components/ui/SectionHeading";
 
 const profileSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -21,6 +27,12 @@ const pwSchema = z.object({
   message: "Mật khẩu xác nhận không khớp",
   path: ["new_password_confirmation"],
 });
+
+const PW_FIELDS = [
+  { name: "old_password", label: "Mật khẩu hiện tại", autoComplete: "current-password" },
+  { name: "new_password", label: "Mật khẩu mới", autoComplete: "new-password" },
+  { name: "new_password_confirmation", label: "Xác nhận mật khẩu mới", autoComplete: "new-password" },
+];
 
 export default function Profile() {
   const { user, setAuth } = useAuthStore();
@@ -71,92 +83,67 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-ink">Hồ Sơ Cá Nhân</h1>
+    <Container className="py-10 lg:py-14">
+      <div className="mx-auto max-w-4xl">
+        <SectionHeading as="h1" eyebrow="Tài khoản" title="Hồ sơ cá nhân" className="mb-8" />
+        <AccountNav />
 
-      {/* Profile */}
-      <div className="bg-white border rounded-xl p-6">
-        <h2 className="font-semibold text-ink-soft mb-4">Thông Tin Cá Nhân</h2>
-        <form onSubmit={handleSubmit(onProfile)} className="space-y-4">
+        <section className="grid gap-8 border-b border-line pb-12 md:grid-cols-[240px_1fr]">
           <div>
-            <label className="block text-sm font-medium text-ink-soft mb-1">Họ và Tên</label>
-            <input
-              defaultValue={user?.fullname}
-              disabled
-              className="w-full border bg-tile-warm rounded-lg px-3 py-2.5 text-sm text-ink-soft cursor-not-allowed"
-            />
-            <p className="text-xs text-ink-faint mt-1">Liên hệ hỗ trợ để thay đổi họ tên</p>
+            <h2 className="font-display text-2xl text-ink">Thông tin cá nhân</h2>
+            <p className="mt-2 text-sm text-ink-soft">Email, số điện thoại và giới tính dùng khi giao hàng.</p>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-ink-soft mb-1">Email</label>
-            <input
-              {...register("email")}
-              type="email"
-              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
-            />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-ink-soft mb-1">Số Điện Thoại</label>
-            <input
-              {...register("phone")}
-              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
-            />
-            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-ink-soft mb-1">Giới Tính</label>
-            <select
-              {...register("gender")}
-              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink"
-            >
-              <option value="Nam">Nam</option>
-              <option value="Nữ">Nữ</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="bg-ink hover:bg-black disabled:bg-ink/40 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
-          >
-            {saving ? "Đang lưu..." : "Lưu Thay Đổi"}
-          </button>
-        </form>
-      </div>
-
-      {/* Password */}
-      <div className="bg-white border rounded-xl p-6">
-        <h2 className="font-semibold text-ink-soft mb-4">Đổi Mật Khẩu</h2>
-        <form onSubmit={submitPw(onPassword)} className="space-y-4">
-          {[
-            { name: "old_password", label: "Mật Khẩu Hiện Tại" },
-            { name: "new_password", label: "Mật Khẩu Mới" },
-            { name: "new_password_confirmation", label: "Xác Nhận Mật Khẩu Mới" },
-          ].map(({ name, label }) => (
-            <div key={name}>
-              <label className="block text-sm font-medium text-ink-soft mb-1">{label}</label>
+          <form onSubmit={handleSubmit(onProfile)} className="flex flex-col gap-5">
+            <Field label="Họ và tên" hint="Liên hệ hỗ trợ để thay đổi họ tên">
               <input
-                {...regPw(name)}
-                type="password"
-                placeholder="••••••••"
-                className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
+                defaultValue={user?.fullname}
+                disabled
+                className={`${INPUT_CLASS} cursor-not-allowed bg-tile text-ink-soft`}
               />
-              {pwErrors[name] && <p className="text-red-500 text-xs mt-1">{pwErrors[name].message}</p>}
+            </Field>
+            <Field label="Email" error={errors.email?.message}>
+              <input {...register("email")} type="email" autoComplete="email" className={INPUT_CLASS} />
+            </Field>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Số điện thoại" error={errors.phone?.message}>
+                <input {...register("phone")} inputMode="numeric" autoComplete="tel" className={INPUT_CLASS} />
+              </Field>
+              <Field label="Giới tính">
+                <select {...register("gender")} className={INPUT_CLASS}>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                </select>
+              </Field>
             </div>
-          ))}
-          <button
-            type="submit"
-            disabled={pwSaving}
-            className="bg-ink hover:bg-black disabled:bg-ink/40 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors"
-          >
-            {pwSaving ? "Đang đổi..." : "Đổi Mật Khẩu"}
-          </button>
-        </form>
+            <div>
+              <Button type="submit" loading={saving}>Lưu thay đổi</Button>
+            </div>
+          </form>
+        </section>
+
+        <section className="grid gap-8 pt-12 md:grid-cols-[240px_1fr]">
+          <div>
+            <h2 className="font-display text-2xl text-ink">Đổi mật khẩu</h2>
+            <p className="mt-2 text-sm text-ink-soft">Mật khẩu mới tối thiểu 6 ký tự.</p>
+          </div>
+          <form onSubmit={submitPw(onPassword)} className="flex flex-col gap-5">
+            {PW_FIELDS.map(({ name, label, autoComplete }) => (
+              <Field key={name} label={label} error={pwErrors[name]?.message}>
+                <input
+                  {...regPw(name)}
+                  type="password"
+                  autoComplete={autoComplete}
+                  placeholder="••••••••"
+                  className={INPUT_CLASS}
+                />
+              </Field>
+            ))}
+            <div>
+              <Button type="submit" variant="secondary" loading={pwSaving}>Đổi mật khẩu</Button>
+            </div>
+          </form>
+        </section>
       </div>
-    </div>
+    </Container>
   );
 }

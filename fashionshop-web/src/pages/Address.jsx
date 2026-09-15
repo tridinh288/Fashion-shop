@@ -3,16 +3,29 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, MapPin } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { getAddresses, addAddress, deleteAddress, setDefaultAddress } from "../api/addressApi";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import AccountNav from "../components/layout/AccountNav";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
+import EmptyState from "../components/ui/EmptyState";
+import Field from "../components/ui/Field";
+import { INPUT_CLASS } from "../components/ui/fieldStyles";
+import SectionHeading from "../components/ui/SectionHeading";
 
 const schema = z.object({
   fullname: z.string().min(2, "Tên tối thiểu 2 ký tự"),
   phone: z.string().regex(/^\d{9,11}$/, "Số điện thoại 9-11 chữ số"),
   address_details: z.string().min(5, "Địa chỉ tối thiểu 5 ký tự"),
 });
+
+const FIELDS = [
+  { name: "fullname", label: "Người nhận", placeholder: "Nguyễn Văn A" },
+  { name: "phone", label: "Số điện thoại", placeholder: "0901234567" },
+  { name: "address_details", label: "Địa chỉ chi tiết", placeholder: "Số nhà, đường, phường, quận, thành phố" },
+];
 
 export default function Address() {
   const qc = useQueryClient();
@@ -68,98 +81,82 @@ export default function Address() {
     }
   };
 
-  if (isLoading) return <LoadingSpinner />;
-
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-ink">Địa Chỉ Giao Hàng</h1>
-        <button
-          onClick={() => setShowForm((s) => !s)}
-          className="flex items-center gap-1.5 bg-ink hover:bg-black text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-        >
-          <Plus size={15} /> Thêm Địa Chỉ
-        </button>
-      </div>
+    <Container className="py-10 lg:py-14">
+      <div className="mx-auto max-w-4xl">
+        <SectionHeading
+          as="h1"
+          eyebrow="Tài khoản"
+          title="Địa chỉ giao hàng"
+          className="mb-8"
+          action={
+            <Button onClick={() => setShowForm((s) => !s)} aria-expanded={showForm} aria-controls="form-dia-chi">
+              <Plus size={15} strokeWidth={1.5} aria-hidden="true" /> Thêm địa chỉ
+            </Button>
+          }
+        />
+        <AccountNav />
 
-      {/* Add form */}
-      {showForm && (
-        <div className="bg-tile border border-line rounded-xl p-5 mb-5">
-          <h2 className="font-semibold text-ink-soft mb-4">Địa Chỉ Mới</h2>
-          <form onSubmit={handleSubmit(onAdd)} className="space-y-3">
-            {[
-              { name: "fullname", label: "Người Nhận", placeholder: "Nguyễn Văn A" },
-              { name: "phone", label: "Số Điện Thoại", placeholder: "0901234567" },
-              { name: "address_details", label: "Địa Chỉ Chi Tiết", placeholder: "Số nhà, đường, phường, quận, thành phố" },
-            ].map(({ name, label, placeholder }) => (
-              <div key={name}>
-                <label className="block text-sm font-medium text-ink-soft mb-1">{label}</label>
-                <input
-                  {...register(name)}
-                  placeholder={placeholder}
-                  className="w-full border bg-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
-                />
-                {errors[name] && <p className="text-red-500 text-xs mt-1">{errors[name].message}</p>}
+        {showForm && (
+          <section id="form-dia-chi" className="mb-10 border border-line bg-surface p-6">
+            <h2 className="font-display text-2xl text-ink">Địa chỉ mới</h2>
+            <form onSubmit={handleSubmit(onAdd)} className="mt-5 flex flex-col gap-5">
+              {FIELDS.map(({ name, label, placeholder }) => (
+                <Field key={name} label={label} error={errors[name]?.message}>
+                  <input {...register(name)} placeholder={placeholder} className={INPUT_CLASS} />
+                </Field>
+              ))}
+              <div className="flex gap-3">
+                <Button type="submit" loading={saving}>Lưu địa chỉ</Button>
+                <Button variant="secondary" onClick={() => { setShowForm(false); reset(); }}>
+                  Hủy
+                </Button>
               </div>
-            ))}
-            <div className="flex gap-2 pt-1">
-              <button type="submit" disabled={saving} className="bg-ink hover:bg-black disabled:bg-ink/40 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
-                {saving ? "Đang lưu..." : "Lưu Địa Chỉ"}
-              </button>
-              <button type="button" onClick={() => { setShowForm(false); reset(); }} className="border text-ink-soft text-sm font-semibold px-5 py-2 rounded-lg hover:bg-tile-warm transition-colors">
-                Hủy
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+            </form>
+          </section>
+        )}
 
-      {/* Address list */}
-      {addresses.length === 0 ? (
-        <div className="text-center py-16">
-          <MapPin size={48} className="text-zinc-200 mx-auto mb-3" />
-          <p className="text-ink-faint">Chưa có địa chỉ nào</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {addresses.map((addr) => (
-            <div
-              key={addr.id}
-              className={`bg-white border rounded-xl p-4 ${addr.is_default ? "border-ink bg-tile" : ""}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-ink text-sm">{addr.fullname}</span>
-                    <span className="text-ink-faint text-sm">|</span>
-                    <span className="text-ink-soft text-sm">{addr.phone}</span>
-                    {addr.is_default && (
-                      <span className="bg-tile text-ink text-xs font-semibold px-2 py-0.5 rounded-full">Mặc định</span>
-                    )}
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : addresses.length === 0 ? (
+          <EmptyState title="Chưa có địa chỉ nào" />
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {addresses.map((addr) => (
+              <li
+                key={addr.id}
+                className={`flex flex-col border bg-surface p-5 ${addr.is_default ? "border-ink" : "border-line"}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-medium text-ink">{addr.fullname}</p>
+                    <p className="mt-0.5 text-sm text-ink-soft">{addr.phone}</p>
                   </div>
-                  <p className="text-sm text-ink-soft">{addr.address_details}</p>
+                  {addr.is_default && <span className="eyebrow mt-1">Mặc định</span>}
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  {!addr.is_default && (
-                    <button
-                      onClick={() => handleSetDefault(addr.id)}
-                      className="text-xs text-ink border border-ink px-2.5 py-1 rounded-lg hover:bg-tile transition-colors"
-                    >
+                <p className="mt-3 flex-1 text-sm text-ink-soft">{addr.address_details}</p>
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3">
+                  {!addr.is_default ? (
+                    <Button variant="link" onClick={() => handleSetDefault(addr.id)} className="min-h-11">
                       Đặt mặc định
-                    </button>
+                    </Button>
+                  ) : (
+                    <span />
                   )}
                   <button
+                    type="button"
                     onClick={() => handleDelete(addr.id)}
-                    className="text-ink-faint hover:text-red-500 transition-colors p-1"
+                    aria-label={`Xoá địa chỉ của ${addr.fullname}`}
+                    className="flex h-11 w-11 items-center justify-center text-ink-faint transition-colors duration-200 hover:text-sale"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={16} strokeWidth={1.5} aria-hidden="true" />
                   </button>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </Container>
   );
 }

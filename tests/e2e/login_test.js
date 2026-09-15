@@ -20,7 +20,7 @@ Scenario('Trang login hiển thị đúng form', async ({ I }) => {
   I.amOnPage('/login');
   await I.waitForElement('[name="email"]', 8);
 
-  I.see('Đăng Nhập');
+  I.see('Đăng nhập');
   I.seeElement('[name="email"]');
   I.seeElement('[name="password"]');
   I.seeElement('button[type="submit"]');

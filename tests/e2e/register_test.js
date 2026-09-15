@@ -8,7 +8,7 @@ Before(async ({ I }) => {
 Scenario('Trang register hiển thị đúng form', async ({ I }) => {
   await I.waitForElement('[name="fullname"]', 5);
 
-  I.see('Đăng Ký');
+  I.see('Đăng ký');
   I.seeElement('[name="fullname"]');
   I.seeElement('[name="email"]');
   I.seeElement('[name="phone"]');

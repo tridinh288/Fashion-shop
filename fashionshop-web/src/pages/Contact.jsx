@@ -5,12 +5,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Phone, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 import { sendContact } from "../api/contactApi";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
+import Field from "../components/ui/Field";
+import { INPUT_CLASS } from "../components/ui/fieldStyles";
 
 const schema = z.object({
   fullname: z.string().min(2, "Tên tối thiểu 2 ký tự"),
   email: z.string().email("Email không hợp lệ"),
   message: z.string().min(10, "Nội dung tối thiểu 10 ký tự"),
 });
+
+const INFO = [
+  { icon: MapPin, label: "Địa chỉ", value: "123 Đường Thời Trang, Quận 1, TP.HCM" },
+  { icon: Phone, label: "Điện thoại", value: "0901 234 567" },
+  { icon: Mail, label: "Email", value: "support@fashionshop.vn" },
+];
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
@@ -33,86 +43,53 @@ export default function Contact() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-ink mb-2 text-center">Liên Hệ</h1>
-      <p className="text-center text-ink-soft mb-10">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
+    <Container className="py-14 lg:py-20">
+      <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <p className="eyebrow">Hỗ trợ</p>
+          <h1 className="mt-3 font-display text-5xl leading-tight text-ink sm:text-6xl">Liên hệ</h1>
+          <p className="mt-5 max-w-md text-ink-soft">
+            Hỏi về size, đơn hàng hay đổi trả — để lại lời nhắn, chúng tôi phản hồi trong ngày làm việc.
+          </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Info */}
-        <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="bg-tile p-3 rounded-xl shrink-0">
-              <MapPin size={20} className="text-ink" />
-            </div>
-            <div>
-              <p className="font-semibold text-ink">Địa chỉ</p>
-              <p className="text-ink-soft text-sm">123 Đường Thời Trang, Quận 1, TP.HCM</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="bg-tile p-3 rounded-xl shrink-0">
-              <Phone size={20} className="text-ink" />
-            </div>
-            <div>
-              <p className="font-semibold text-ink">Điện thoại</p>
-              <p className="text-ink-soft text-sm">0901 234 567</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="bg-tile p-3 rounded-xl shrink-0">
-              <Mail size={20} className="text-ink" />
-            </div>
-            <div>
-              <p className="font-semibold text-ink">Email</p>
-              <p className="text-ink-soft text-sm">support@fashionshop.vn</p>
-            </div>
-          </div>
+          <dl className="mt-12 flex flex-col divide-y divide-line border-y border-line">
+            {INFO.map(({ icon: Icon, label, value }) => (
+              <div key={label} className="flex items-center gap-4 py-5">
+                <Icon size={18} strokeWidth={1.5} className="shrink-0 text-ink" aria-hidden="true" />
+                <dt className="w-24 shrink-0 text-sm text-ink-faint">{label}</dt>
+                <dd className="text-ink">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
-        {/* Form */}
-        <div className="bg-white border rounded-2xl p-6 shadow-sm">
-          <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-ink-soft mb-1">Họ và Tên</label>
-              <input
-                {...register("fullname")}
-                placeholder="Nguyễn Văn A"
-                className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
-              />
-              {errors.fullname && <p className="text-red-500 text-xs mt-1">{errors.fullname.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-ink-soft mb-1">Email</label>
-              <input
+        <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 lg:pt-4">
+          <Field label="Họ và tên" error={errors.fullname?.message}>
+            <input {...register("fullname")} placeholder="Nguyễn Văn A" autoComplete="name" className={INPUT_CLASS} />
+          </Field>
+          <Field label="Email" error={errors.email?.message}>
+            <input
               {...register("email")}
-              name="email"
               type="text"
+              inputMode="email"
               autoComplete="off"
               placeholder="email@example.com"
-              className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15"
+              className={INPUT_CLASS}
             />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-ink-soft mb-1">Nội Dung</label>
-              <textarea
-                {...register("message")}
-                rows={5}
-                placeholder="Nội dung tin nhắn..."
-                className="w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:border-ink focus:ring-1 focus:ring-ink/15 resize-none"
-              />
-              {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-ink hover:bg-black disabled:bg-ink/40 text-white font-semibold py-3 rounded-xl transition-colors"
-            >
-              {loading ? "Đang gửi..." : "Gửi Liên Hệ"}
-            </button>
-          </form>
-        </div>
+          </Field>
+          <Field label="Nội dung" error={errors.message?.message}>
+            <textarea
+              {...register("message")}
+              rows={6}
+              placeholder="Bạn cần chúng tôi hỗ trợ điều gì?"
+              className={`${INPUT_CLASS} resize-none`}
+            />
+          </Field>
+          <Button type="submit" size="lg" loading={loading} className="w-full">
+            Gửi liên hệ
+          </Button>
+        </form>
       </div>
-    </div>
+    </Container>
   );
 }

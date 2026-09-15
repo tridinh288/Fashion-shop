@@ -8,7 +8,7 @@ Before(async ({ I }) => {
 Scenario('Trang liên hệ hiển thị form', async ({ I }) => {
   await I.waitForElement('[name="fullname"]', 5);
 
-  I.see('Liên Hệ');
+  I.see('Liên hệ');
   I.seeElement('[name="fullname"]');
   I.seeElement('[name="email"]');
   I.seeElement('[name="message"]');

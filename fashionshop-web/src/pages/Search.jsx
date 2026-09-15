@@ -1,13 +1,17 @@
+import { useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Search as SearchIcon } from "lucide-react";
+import toast from "react-hot-toast";
 import { getProducts } from "../api/productApi";
 import { addToCart } from "../api/cartApi";
 import useAuthStore from "../stores/authStore";
 import useCartStore from "../stores/cartStore";
 import ProductCard from "../components/ui/ProductCard";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
-import toast from "react-hot-toast";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
+import EmptyState from "../components/ui/EmptyState";
+import useReveal from "../hooks/useReveal";
 
 export default function Search() {
   const [searchParams] = useSearchParams();
@@ -15,6 +19,7 @@ export default function Search() {
   const navigate = useNavigate();
   const { token } = useAuthStore();
   const { count, setCount } = useCartStore();
+  const gridRef = useRef(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", "search", q],
@@ -23,6 +28,8 @@ export default function Search() {
   });
 
   const products = data?.data?.data || [];
+
+  useReveal(gridRef, { dependencies: [q, isLoading] });
 
   const handleAddToCart = async (product) => {
     if (!token) {
@@ -40,33 +47,41 @@ export default function Search() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-6">
-        <SearchIcon size={20} className="text-ink-faint" />
-        <h1 className="text-xl font-bold text-ink">
-          Kết quả tìm kiếm: <span className="text-ink">"{q}"</span>
-        </h1>
+    <div>
+      <div className="border-b border-line">
+        <Container className="py-10">
+          <p className="eyebrow">Tìm kiếm</p>
+          <h1 className="mt-3 font-display text-4xl text-ink sm:text-5xl">
+            {q ? <>Kết quả cho “{q}”</> : "Tìm sản phẩm"}
+          </h1>
+          {q && !isLoading && products.length > 0 && (
+            <p className="mt-3 text-sm text-ink-soft">Tìm thấy {products.length} sản phẩm</p>
+          )}
+        </Container>
       </div>
 
-      {!q ? (
-        <p className="text-ink-faint text-center py-16">Nhập từ khóa để tìm kiếm sản phẩm</p>
-      ) : isLoading ? (
-        <LoadingSpinner />
-      ) : products.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-ink-soft text-lg mb-2">Không tìm thấy kết quả cho "{q}"</p>
-          <p className="text-ink-faint text-sm">Thử tìm với từ khóa khác</p>
+      <Container className="pt-10">
+        <div ref={gridRef}>
+          {!q ? (
+            <EmptyState title="Nhập từ khóa để tìm kiếm sản phẩm" />
+          ) : isLoading ? (
+            <LoadingSpinner />
+          ) : products.length === 0 ? (
+            <EmptyState
+              title={`Không tìm thấy kết quả cho “${q}”`}
+              action={<Button to="/category" variant="secondary">Xem tất cả sản phẩm</Button>}
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+              {products.map((p) => (
+                <div key={p.id} data-reveal>
+                  <ProductCard product={p} onAddToCart={handleAddToCart} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <>
-          <p className="text-sm text-ink-soft mb-4">Tìm thấy {products.length} sản phẩm</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
-            ))}
-          </div>
-        </>
-      )}
+      </Container>
     </div>
   );
 }

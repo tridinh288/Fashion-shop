@@ -8,6 +8,10 @@ import { login } from "../api/authApi";
 import { getCart } from "../api/cartApi";
 import useAuthStore from "../stores/authStore";
 import useCartStore from "../stores/cartStore";
+import AuthShell from "../components/layout/AuthShell";
+import Button from "../components/ui/Button";
+import Field from "../components/ui/Field";
+import { INPUT_CLASS } from "../components/ui/fieldStyles";
 
 const schema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -62,64 +66,51 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-tile-warm flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-sm border p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-ink mb-1">
-          Đăng Nhập
-        </h1>
-
-        <p className="text-sm text-ink-soft mb-6">
-          Chào mừng bạn trở lại FashionShop
-        </p>
-
-        <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <AuthShell
+      eyebrow="Tài khoản"
+      title="Đăng nhập"
+      subtitle="Chào mừng bạn trở lại Fashion Shop."
+      footer={
+        <>
+          Chưa có tài khoản?{" "}
+          <Link to="/register" className="font-medium text-ink underline underline-offset-4 hover:text-accent">
+            Đăng ký ngay
+          </Link>
+        </>
+      }
+    >
+      <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <Field label="Email" error={errors.email?.message}>
           <input
             {...register("email")}
             type="text"
+            inputMode="email"
+            autoComplete="email"
             placeholder="email@example.com"
-            className="w-full border px-3 py-2.5 rounded-lg"
+            className={INPUT_CLASS}
           />
-          {errors.email && (
-            <p className="text-red-500 text-xs">
-              {errors.email.message}
-            </p>
-          )}
+        </Field>
 
+        <Field label="Mật khẩu" error={errors.password?.message}>
           <input
             {...register("password")}
             type="password"
+            autoComplete="current-password"
             placeholder="••••••••"
-            className="w-full border px-3 py-2.5 rounded-lg"
+            className={INPUT_CLASS}
           />
-          {errors.password && (
-            <p className="text-red-500 text-xs">
-              {errors.password.message}
-            </p>
-          )}
+        </Field>
 
-          {/* 🔥 FIX CHO TEST */}
-          {serverError && (
-            <p className="text-red-500 text-sm font-medium">
-              {serverError}
-            </p>
-          )}
+        {serverError && (
+          <p role="alert" className="border-l-2 border-sale pl-3 text-sm text-sale">
+            {serverError}
+          </p>
+        )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-ink text-white py-2.5 rounded-lg"
-          >
-            {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
-          </button>
-        </form>
-
-        <p className="text-sm text-center text-ink-soft mt-6">
-          Chưa có tài khoản?{" "}
-          <Link to="/register" className="text-ink">
-            Đăng ký ngay
-          </Link>
-        </p>
-      </div>
-    </div>
+        <Button type="submit" size="lg" loading={loading} className="mt-2 w-full">
+          Đăng nhập
+        </Button>
+      </form>
+    </AuthShell>
   );
 }
