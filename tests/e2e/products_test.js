@@ -3,17 +3,17 @@ Feature('Trang Sản Phẩm @e2e');
 Scenario('Trang chủ hiển thị danh sách sản phẩm và tabs', async ({ I }) => {
   I.amOnPage('/');
   await I.waitForElement('h3', 10);
-  I.see('Nổi Bật');
-  I.see('Bán Chạy');
-  I.see('Khuyến Mãi');
+  I.see('Nổi bật');
+  I.see('Bán chạy');
+  I.see('Khuyến mãi');
   I.seeElement('h3');
 });
 
-Scenario('Trang chủ - tab Bán Chạy hiển thị sản phẩm', async ({ I }) => {
+Scenario('Trang chủ - tab Bán chạy hiển thị sản phẩm', async ({ I }) => {
   I.amOnPage('/');
-  await I.waitForText('Bán Chạy', 8);
+  await I.waitForText('Bán chạy', 8);
 
-  I.click('Bán Chạy');
+  I.click('Bán chạy');
   await I.waitForElement('h3', 8);
   I.seeElement('h3');
 });
@@ -21,7 +21,7 @@ Scenario('Trang chủ - tab Bán Chạy hiển thị sản phẩm', async ({ I }
 Scenario('Kiểm tra sử dụng bộ lọc sản phẩm', async ({ I }) => {
   I.amOnPage('/category');
   I.wait(5);
-  I.see('Bộ Lọc');
+  I.see('Bộ lọc');
   I.click(locate('input[name="category"]').first());
   I.wait(2);
   I.seeElement('body');
