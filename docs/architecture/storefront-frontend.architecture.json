@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "FashionShop Storefront Frontend",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "render-path", "label": "Render path", "focus": ["shopper", "shell", "pages", "ui", "tokens"], "note": "A route match renders a page out of the shared ui/ primitives, which carry the editorial tokens." },
+      { "id": "data-path", "label": "Data path", "focus": ["pages", "query", "httpc", "api", "storage"], "note": "Pages read through TanStack Query; the axios instance attaches the Bearer token and clears it on a 401." },
+      { "id": "motion-path", "label": "Motion layer", "focus": ["pages", "motion", "ui", "tokens"], "note": "useReveal drives GSAP only when the reader allows motion; nothing is hidden by CSS first." }
+    ]
+  },
+  "components": [
+    { "id": "shopper", "type": "external", "label": "Shoppers", "sublabel": "Browser", "pos": [40, 320], "size": [130, 60] },
+    { "id": "shell", "type": "frontend", "label": "App shell", "sublabel": "BrowserRouter · Header/Footer", "pos": [240, 316], "size": [180, 64] },
+    { "id": "pages", "type": "frontend", "label": "Route pages", "sublabel": "Home · Category · Detail · 11 more", "pos": [500, 316], "size": [180, 64] },
+    { "id": "ui", "type": "frontend", "label": "components/ui", "sublabel": "ProductCard · Button · Price", "pos": [500, 176], "size": [180, 64] },
+    { "id": "tokens", "type": "frontend", "label": "index.css @theme", "sublabel": "editorial tokens · Tailwind 4", "pos": [500, 36], "size": [180, 64] },
+    { "id": "motion", "type": "frontend", "label": "useReveal", "sublabel": "lib/gsap · ScrollTrigger", "pos": [780, 176], "size": [180, 64], "tag": "opt-in" },
+    { "id": "query", "type": "backend", "label": "TanStack Query v5", "sublabel": "server cache", "pos": [500, 472], "size": [180, 64] },
+    { "id": "stores", "type": "backend", "label": "Zustand", "sublabel": "authStore · cartStore", "pos": [240, 472], "size": [180, 64] },
+    { "id": "httpc", "type": "backend", "label": "src/api · axios", "sublabel": "Bearer interceptor", "pos": [780, 316], "size": [180, 64] },
+    { "id": "storage", "type": "database", "label": "localStorage", "sublabel": "token · user", "pos": [780, 472], "size": [180, 64] },
+    { "id": "api", "type": "external", "label": "Laravel 11 API", "sublabel": "/api/v1", "pos": [1060, 316], "size": [180, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "fashionshop-web · Vite build", "wraps": ["shell", "pages", "ui", "tokens", "motion", "query", "stores", "httpc"] }
+  ],
+  "connections": [
+    { "id": "shopper-shell", "from": "shopper", "to": "shell", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "shell-pages", "from": "shell", "to": "pages", "label": "route match", "variant": "emphasis" },
+    { "id": "pages-ui", "from": "pages", "to": "ui", "label": "render" },
+    { "id": "ui-tokens", "from": "ui", "to": "tokens", "label": "@theme classes" },
+    { "id": "pages-motion", "from": "pages", "to": "motion", "label": "reveal on mount or scroll", "variant": "dashed" },
+    { "id": "pages-query", "from": "pages", "to": "query", "label": "useQuery", "labelDy": 24 },
+    { "id": "query-httpc", "from": "query", "to": "httpc", "label": "query fn" },
+    { "id": "shell-stores", "from": "shell", "to": "stores", "label": "cart count · session", "labelDy": 24 },
+    { "id": "httpc-storage", "from": "httpc", "to": "storage", "label": "attach token · clear on 401", "variant": "security", "labelDy": 24 },
+    { "id": "httpc-api", "from": "httpc", "to": "api", "label": "REST · Bearer", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Shell and routes", "items": ["App.jsx holds BrowserRouter, Header, Footer and the Toaster", "PrivateRoute sends a tokenless visitor to /login", "14 pages: 7 public, 7 behind the token"] },
+    { "dot": "emerald", "title": "Data and session", "items": ["TanStack Query caches reads for 60s and retries once", "One axios instance attaches Authorization on every call", "A 401 outside /login clears localStorage and returns to /login"] },
+    { "dot": "amber", "title": "Editorial layer", "items": ["Tokens live in index.css @theme: paper, ink, accent, sale", "Playfair Display for headings, Inter for everything else", "useReveal stays off under prefers-reduced-motion"] }
+  ]
+}

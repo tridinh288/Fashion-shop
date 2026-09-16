@@ -5,6 +5,7 @@
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![GSAP](https://img.shields.io/badge/GSAP-3-88CE02?logo=greensock&logoColor=black)
 ![TiDB Cloud](https://img.shields.io/badge/TiDB_Cloud-Serverless-DB2D2E?logo=mysql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Render-2496ED?logo=docker&logoColor=white)
 
@@ -22,32 +23,46 @@ Hệ thống thương mại điện tử bán quần áo thời trang nam/nữ, 
 
 ## 📸 Giao Diện
 
+Storefront đã được làm lại theo phong cách **Editorial tối giản**: nền giấy kem, tiêu
+đề serif Playfair Display, thân chữ Inter, góc vuông, không đổ bóng, và hiệu ứng GSAP
+chỉ ở mức hiện dần khi cuộn tới.
+
 ### Website khách hàng
 
 <p align="center">
   <img src="docs/screenshots/01-trang-chu.png" width="100%" /><br>
-  <em>Trang chủ — ảnh đầu trang đặt trên nền vải dệt bằng WebGL</em>
+  <em>Trang chủ — hero chia đôi, ảnh bên phải do quản trị viên đặt, chữ hiện dần khi tải trang</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/02-trang-chu-san-pham.png" width="100%" /><br>
+  <em>Đang được chú ý — ba tab Nổi bật / Bán chạy / Khuyến mãi dạng chữ gạch chân</em>
 </p>
 
 | Danh sách sản phẩm | Chi tiết sản phẩm |
 |:---:|:---:|
-| <img src="docs/screenshots/02-danh-sach-san-pham.png" width="100%" /> | <img src="docs/screenshots/03-chi-tiet-san-pham.png" width="100%" /> |
-| Lọc theo tab, nhãn giảm giá, thêm nhanh vào giỏ | Chọn size, số lượng, đánh giá của khách |
+| <img src="docs/screenshots/03-danh-sach-san-pham.png" width="100%" /> | <img src="docs/screenshots/04-chi-tiet-san-pham.png" width="100%" /> |
+| Thanh lọc ngang bằng radio thật: giới tính dạng chữ gạch chân, danh mục dạng chip viền | Cột phải dính khi cuộn — chọn size, tăng giảm số lượng, thêm vào giỏ |
+
+| Đánh giá sản phẩm | Đăng nhập |
+|:---:|:---:|
+| <img src="docs/screenshots/05-danh-gia.png" width="100%" /> | <img src="docs/screenshots/06-dang-nhap.png" width="100%" /> |
+| Điểm trung bình bên trái, danh sách đánh giá bên phải, tải ngay cùng trang | Form đặt giữa trên nền giấy, sai mật khẩu báo tại chỗ chứ không tải lại trang |
 
 ### Trang quản trị
 
 <p align="center">
-  <img src="docs/screenshots/04-admin-dashboard.png" width="100%" /><br>
+  <img src="docs/screenshots/07-admin-dashboard.png" width="100%" /><br>
   <em>Dashboard — doanh thu tách theo trạng thái đơn, đơn đã huỷ không tính vào doanh thu</em>
 </p>
 
 | Quản lý sản phẩm | Quản lý đơn hàng |
 |:---:|:---:|
-| <img src="docs/screenshots/05-admin-san-pham.png" width="100%" /> | <img src="docs/screenshots/06-admin-don-hang.png" width="100%" /> |
-| Thêm, sửa, xoá sản phẩm kèm ảnh | Xem chi tiết và cập nhật trạng thái đơn |
+| <img src="docs/screenshots/08-admin-san-pham.png" width="100%" /> | <img src="docs/screenshots/09-admin-don-hang.png" width="100%" /> |
+| Thêm, sửa, xoá sản phẩm kèm ảnh | Lọc theo trạng thái, xem chi tiết và cập nhật đơn |
 
 <p align="center">
-  <img src="docs/screenshots/07-admin-anh-trang-chu.png" width="100%" /><br>
+  <img src="docs/screenshots/10-admin-anh-trang-chu.png" width="100%" /><br>
   <em>Ảnh trang chủ — tải ảnh rồi kéo để chọn phần hiển thị, hoặc chỉnh bằng thanh trượt</em>
 </p>
 
@@ -94,8 +109,8 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
 | Ngôn ngữ | PHP 8.3 |
 | Auth | Laravel Sanctum (Bearer Token) |
 | ORM | Eloquent |
-| Database | MySQL 8 |
-| File Storage | Laravel Storage (`storage/app/public`) |
+| Database | MySQL 8 / TiDB Serverless |
+| File Storage | Cloudinary (`IMAGE_DRIVER=cloudinary`) hoặc `storage/app/public` khi chạy offline |
 | Unit Testing | PHPUnit (SQLite in-memory) |
 | Code Style | Laravel Pint |
 
@@ -103,15 +118,43 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
 
 | Thành phần | Công nghệ |
 |---|---|
-| Framework | React 19 + Vite |
+| Framework | React 19 + Vite 8 |
 | Routing | React Router v7 |
 | Server State | TanStack Query v5 |
 | Client State | Zustand v5 |
 | Form | React Hook Form + Zod |
-| Styling | Tailwind CSS v4 |
+| Styling | Tailwind CSS v4 (`@theme` tokens) |
 | HTTP Client | Axios |
 | Icons | Lucide React |
 | Notifications | React Hot Toast |
+| Animation (web) | GSAP 3 + ScrollTrigger + `@gsap/react` |
+
+### Design system — `fashionshop-web`
+
+Toàn bộ token nằm trong `src/index.css` dưới khối `@theme`, nên đổi một chỗ là đổi cả site.
+
+| Token | Hex | Dùng cho | Tương phản trên `paper` |
+|---|---|---|---|
+| `paper` | `#f6f3ee` | Nền trang | — |
+| `tile` | `#ece6db` | Ô ảnh sản phẩm | — |
+| `surface` | `#ffffff` | Ô nhập, menu thả | — |
+| `ink` | `#141414` | Chữ chính, nút chính | 16.6:1 |
+| `ink-soft` | `#5c554b` | Chữ phụ, mô tả | 6.6:1 |
+| `ink-faint` | `#6b645a` | Chú thích, giá gạch ngang | 5.3:1 |
+| `accent` | `#7a5f3c` | Nhãn nhỏ, chữ nghiêng nhấn | 5.4:1 |
+| `line` | `#d9d2c5` | Đường kẻ, viền ô | — |
+| `sale` | `#b42318` | Nhãn giảm giá, lỗi form | 5.9:1 |
+
+- **Chữ:** Playfair Display 500 cho tiêu đề, Inter 400/500/600 cho phần còn lại; thân
+  chữ 16px, giãn dòng 1.6, không có chữ nội dung dưới 12px.
+- **Hình khối:** góc vuông, không đổ bóng (trừ menu thả của Header); ô ảnh sản phẩm tỉ
+  lệ 3:4, trang chi tiết 4:5, ảnh `object-contain`.
+- **Chuyển động:** chỉ một hook `useReveal` (opacity + dịch 12px). Nội dung **không**
+  bị ẩn sẵn bằng CSS, nên JS lỗi thì trang vẫn hiện đủ; `prefers-reduced-motion:
+  reduce` thì tắt hẳn hiệu ứng.
+- **Tiếp cận:** vùng bấm tối thiểu 44×44px, `:focus-visible` viền 2px màu `ink`, radio
+  của thanh lọc là radio thật (ẩn trực quan, không `display:none`) nên dùng được bằng
+  bàn phím.
 
 ### Testing
 
@@ -135,7 +178,7 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
 
 ### Khách chưa đăng nhập (Guest)
 
-- Xem trang chủ với các tab: Nổi Bật, Bán Chạy, Khuyến Mãi
+- Xem trang chủ với các tab: Nổi bật, Bán chạy, Khuyến mãi
 - Duyệt sản phẩm theo danh mục và giới tính (Nam/Nữ)
 - Tìm kiếm sản phẩm theo tên
 - Xem chi tiết sản phẩm và đánh giá
@@ -179,6 +222,25 @@ FashionShop gồm 3 ứng dụng độc lập giao tiếp qua REST API:
 
 > Bản tương tác với 3 guided view (shopper request path, admin request path, image storage): mở [`docs/architecture/runtime-architecture.html`](docs/architecture/runtime-architecture.html) bằng trình duyệt.
 
+### Bên trong storefront
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/storefront-frontend.dark.png">
+    <img src="docs/architecture/storefront-frontend.light.png" width="100%" alt="FashionShop storefront frontend architecture" />
+  </picture>
+</p>
+
+> Bản tương tác với 3 guided view (render path, data path, motion layer): mở [`docs/architecture/storefront-frontend.html`](docs/architecture/storefront-frontend.html) bằng trình duyệt.
+
+- `App.jsx` giữ `BrowserRouter`, Header/Footer và Toaster; `PrivateRoute` đẩy khách chưa
+  có token về `/login`. 14 trang: 7 công khai, 7 nằm sau token
+- Trang đọc dữ liệu qua TanStack Query (cache 60s, retry 1 lần), không gọi axios trực tiếp
+- Một instance axios duy nhất đính `Authorization` cho mọi request; gặp 401 ngoài
+  `/login` thì xoá `localStorage` và quay về trang đăng nhập
+- Lớp giao diện tách riêng: `components/ui` dựng thẻ sản phẩm, nút, giá; `index.css`
+  giữ token; `useReveal` giữ chuyển động — trang không tự viết lại màu hay animation
+
 **Luồng chạy trên production:**
 - `fashionshop-web` và `fashionshop-admin` là hai bản build Vite deploy dạng Render Static Site, nhận API base URL qua `VITE_API_URL` lúc build
 - Mọi request tới Laravel 11 API (`/api/v1`) đều kèm Bearer token; nhóm route admin đi qua thêm `auth:sanctum` và middleware `IsAdmin`
@@ -209,6 +271,7 @@ Fashion-Shop/
 │   │   │   │   ├── Admin/
 │   │   │   │   │   ├── ContactController.php
 │   │   │   │   │   ├── DashboardController.php
+│   │   │   │   │   ├── HomeCoverController.php
 │   │   │   │   │   ├── OrderController.php
 │   │   │   │   │   ├── ProductController.php
 │   │   │   │   │   ├── ReviewController.php
@@ -218,6 +281,7 @@ Fashion-Shop/
 │   │   │   │   ├── CartController.php
 │   │   │   │   ├── CategoryController.php
 │   │   │   │   ├── ContactController.php
+│   │   │   │   ├── HomeController.php
 │   │   │   │   ├── OrderController.php
 │   │   │   │   ├── ProductController.php
 │   │   │   │   ├── ProfileController.php
@@ -225,35 +289,48 @@ Fashion-Shop/
 │   │   │   │   └── UserAddressController.php
 │   │   │   └── Middleware/
 │   │   │       └── IsAdmin.php
-│   │   └── Models/
-│   │       ├── Admin.php
-│   │       ├── Cart.php
-│   │       ├── Category.php
-│   │       ├── Contact.php
-│   │       ├── Order.php
-│   │       ├── OrderDetail.php
-│   │       ├── Product.php
-│   │       ├── Review.php
-│   │       ├── User.php
-│   │       └── UserAddress.php
+│   │   ├── Models/
+│   │   │   ├── Admin.php
+│   │   │   ├── Cart.php
+│   │   │   ├── Category.php
+│   │   │   ├── Contact.php
+│   │   │   ├── Order.php
+│   │   │   ├── OrderDetail.php
+│   │   │   ├── Product.php
+│   │   │   ├── Review.php
+│   │   │   ├── Setting.php
+│   │   │   ├── User.php
+│   │   │   └── UserAddress.php
+│   │   └── Support/
+│   │       ├── HomeCovers.php      # 3 ô ảnh trang chủ (path / fit / pos)
+│   │       ├── Images/             # Driver ảnh: Cloudinary hoặc ổ đĩa local
+│   │       ├── ProductImages.php
+│   │       └── UploadStore.php
 │   ├── database/
 │   │   ├── migrations/
 │   │   └── seeders/
 │   ├── routes/
 │   │   └── api.php
-│   ├── storage/app/public/products/ # Ảnh sản phẩm upload
+│   ├── storage/app/public/products/ # Ảnh mẫu khi chạy IMAGE_DRIVER=local
 │   ├── .env
 │   ├── .env.example
 │   ├── Dockerfile
 │   └── docker-entrypoint.sh
 │
-├── fashionshop-web/                # React Storefront
+├── fashionshop-web/                # React Storefront (Editorial)
 │   ├── src/
-│   │   ├── api/                    # Axios instances + API calls
-│   │   ├── components/             # Header, Footer, UI components
-│   │   ├── pages/                  # Home, ProductDetail, Cart, Checkout, Orders, ...
+│   │   ├── api/                    # axios.js + productApi, cartApi, homeApi, ...
+│   │   ├── components/
+│   │   │   ├── layout/             # Header, Footer, AuthShell, AccountNav
+│   │   │   └── ui/                 # ProductCard, Button, Price, Field, EmptyState, ...
+│   │   ├── hooks/
+│   │   │   └── useReveal.js        # Hiện dần bằng GSAP, tôn trọng reduced-motion
+│   │   ├── lib/
+│   │   │   └── gsap.js             # Đăng ký GSAP + ScrollTrigger một lần
+│   │   ├── pages/                  # Home, Category, ProductDetail, Cart, Checkout, ...
 │   │   ├── stores/                 # Zustand: authStore, cartStore
-│   │   └── utils/                  # constants.js, formatCurrency.js
+│   │   ├── utils/                  # constants.js, formatCurrency.js
+│   │   └── index.css               # @theme — token màu, font, tiện ích
 │   ├── Dockerfile
 │   └── nginx.conf
 │
@@ -276,15 +353,21 @@ Fashion-Shop/
 │   │   ├── profile_test.js         # GET/PUT /profile, PUT /profile/password
 │   │   └── admin_test.js           # Toàn bộ /admin/* endpoints
 │   ├── e2e/
+│   │   ├── admin_test.js
 │   │   ├── cart_test.js
-│   │   ├── orders_test.js
 │   │   ├── contact_test.js
+│   │   ├── login_test.js
+│   │   ├── orders_test.js
+│   │   ├── products_test.js
 │   │   └── register_test.js
 │   ├── steps_file.js               # CodeceptJS helpers (registerApiUser, addToCartViaApi, ...)
 │   ├── codecept.api.conf.js        # Config chạy API tests
 │   ├── codecept.e2e.conf.js        # Config chạy E2E tests
 │   └── package.json
 │
+├── docs/
+│   ├── architecture/               # Sơ đồ archify: spec JSON + HTML + PNG
+│   └── screenshots/                # Ảnh dùng trong README
 ├── postman-json/
 │   └── FashionShop.postman_collection.json
 ├── sonar-project.properties        # Cấu hình SonarCloud
@@ -547,6 +630,27 @@ npm run test:e2e
 
 ---
 
+### Home covers (Public)
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| `GET` | `/home-covers` | Ảnh trang chủ do admin đặt cho 3 ô: `hero`, `nam`, `nu` |
+
+```json
+{
+  "message": "Lấy ảnh trang chủ thành công",
+  "data": {
+    "hero": { "path": "https://res.cloudinary.com/.../hero.jpg", "fit": "cover", "pos": "50% 40%" },
+    "nam":  { "path": null, "fit": "cover", "pos": "50% 50%" },
+    "nu":   { "path": null, "fit": "cover", "pos": "50% 50%" }
+  }
+}
+```
+
+> `path` bằng `null` nghĩa là ô đó chưa được đặt — trang chủ tự lấy ảnh của một sản phẩm đang bán thay thế.
+
+---
+
 ### Contacts (Public)
 
 | Method | Endpoint | Mô tả |
@@ -683,6 +787,27 @@ Size hợp lệ: `S` / `M` / `L` / `XL`
 
 ---
 
+### Admin — Home covers
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| `GET` | `/admin/home-covers` | Thiết lập hiện tại của 3 ô ảnh |
+| `POST` | `/admin/home-covers` | Cập nhật ảnh / cách hiển thị (`multipart/form-data`) |
+| `DELETE` | `/admin/home-covers/{slot}` | Gỡ ảnh khỏi ô — `slot` là `hero`, `nam` hoặc `nu` |
+
+**Form-data fields** — mọi field đều tuỳ chọn, gửi field nào thì cập nhật field đó.
+Với mỗi ô `{slot}` trong `hero` / `nam` / `nu`:
+
+| Field | Type | Mô tả |
+|---|---|---|
+| `{slot}` | file | Ảnh mới (jpg/jpeg/png/webp); ảnh cũ bị xoá khỏi kho |
+| `{slot}_fit` | `cover` \| `contain` | Phủ kín khung (có thể bị cắt) hay vừa khung |
+| `{slot}_pos` | string | Tiêu điểm dạng `"50% 40%"` — quyết định phần ảnh được giữ khi bị cắt |
+
+Ví dụ: `hero`, `hero_fit=cover`, `hero_pos=50% 40%`.
+
+---
+
 ### Admin — Orders
 
 | Method | Endpoint | Mô tả |
@@ -812,7 +937,7 @@ File: `postman-json/FashionShop.postman_collection.json`
 
 ## 13. Database Schema
 
-10 bảng chính:
+11 bảng chính:
 
 ```
 admin
@@ -855,12 +980,22 @@ contacts
 ├── id, fullname, email, phone, message
 ├── status: new | read | resolved
 ├── created_at
+
+settings
+├── id, key, value (nullable), created_at, updated_at
+├── Kho key–value chung. Ảnh trang chủ dùng 3 key cho mỗi ô:
+│   home_cover_{slot}, home_cover_{slot}_fit, home_cover_{slot}_pos
+│   với slot ∈ hero | nam | nu
 ```
 
-**Ảnh sản phẩm:**
-- Lưu tại: `fashionshop-api/storage/app/public/products/`
-- Truy cập qua URL: `{APP_URL}/storage/products/{filename}`
-- Yêu cầu chạy `php artisan storage:link` để tạo symlink
+**Ảnh sản phẩm và ảnh trang chủ:**
+- `IMAGE_DRIVER=cloudinary` (mặc định khi deploy): ảnh đẩy lên Cloudinary, cột
+  `hinh_anh` và bảng `settings` chỉ giữ URL đầy đủ
+- `IMAGE_DRIVER=local` (chạy offline): ảnh ghi vào
+  `fashionshop-api/storage/app/public/products/`, truy cập qua
+  `{APP_URL}/storage/products/{filename}` — cần chạy `php artisan storage:link`
+- Storefront và admin nhận cả hai dạng: giá trị bắt đầu bằng `http` được dùng
+  nguyên văn, còn lại ghép với `APP_URL`
 
 ---
 
